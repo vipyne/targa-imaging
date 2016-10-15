@@ -43,17 +43,12 @@ typedef struct {
 						 // :shrug_emoji:
 } targa_header;
 
-int inefficient_ignore_zeros (int x, int* input_binary_length, char* input)
-{
-	if (input[x] == 0)
-	{
-		printf("ignore_zeros\n");
-		input_binary_length++;
-		inefficient_ignore_zeros(x+1, input_binary_length, input);
-	} else {
-		return x;
-	}
-}
+//int filter_zeros (char* input, char* normalized_input)
+//{
+	//char* input_arr = malloc(size_of(int));
+	//*input_arr = *input[
+	//int normalized_input_length = length; 
+//}
 
 int little_endianify (int number)
 {
@@ -136,16 +131,43 @@ int main (int argc, char* argv[])
 	source = fopen(argv[1], "rb");
 
 	int input_binary_length = 3 * WIDTH * HEIGHT; // normal people call this a buffer
-	char input[input_binary_length];
-	fread(&input, 1, input_binary_length, source);	
+	
+	//char input[input_binary_length];
+	char normalized_input[input_binary_length];
+	
+	char* read_through = malloc(sizeof(char));
+	read_through[0] = 
+	fread(&read_through, 1, input_binary_length, source);	
+	
+	//int x = 0;
+	//in//t i = 0;
 
+	//while (normalized_input[i] != '\0')
+	//{
+	//	if (input[x] != 0)
+	//	{
+	//		normalized_input[i] = input[x];
+	//		++i;
+	//	}
+	//	++x;
+	//}
+	//return normalized_inpu;
+	//fseek(
+
+	//circular buffer?
+
+	
 	//// magic happens here -- write the pixels
+	
+	//filter_zeros( &input, &normalized_input);  
+
 
 	for (int y = 0; y < HEIGHT; ++y)
 	{
 		for (int absolute_x = 0; absolute_x < WIDTH; ++absolute_x)
 		{
 		int x = absolute_x;
+		fread(&read_through, 1, 1, source);	
 		//bool flag = true;
 		//	if (input == EOF) 
 		//		rewind(source);
@@ -160,7 +182,7 @@ int main (int argc, char* argv[])
 
 			//WIDTH += 1;
 		//}
-		x = inefficient_ignore_zeros(absolute_x, &input_binary_length, input);
+		//x = inefficient_ignore_zeros(absolute_x, &input_binary_length, input);
 
 		//if (flag)
 		//{
@@ -170,18 +192,18 @@ int main (int argc, char* argv[])
 			{
 				
 				//printf("asf\n");
-				fputc(input[x]-y, tga);
-				fputc(input[y], tga);
-				fputc(input[x], tga);
+				fputc(read_through[x]-y, tga);
+				fputc(read_through[y], tga);
+				fputc(read_through[x], tga);
 			}
 
 			if (x % 2 != 0)
 			//for (int inner = 0; inner < x; ++inner) 
 			{
 				//printf("xxxx\n");
-				fputc(input[y+y], tga);
-				fputc(input[y+y], tga);
-				fputc(input[x+y], tga);
+				fputc(read_through[y+y], tga);
+				fputc(read_through[y+y], tga);
+				fputc(read_through[x+y], tga);
 			}
 			//if ( x % 2 == 0 ) 
 			//{
