@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <string.h>
 
 #define BYTE_RANGE 256
 //#define WIDTH 250
@@ -51,6 +52,11 @@ int little_endianify (int number)
 int big_endianify (int number)
 {
 	return number / BYTE_RANGE;
+}
+
+int compare_function (const void* a_pointer, const void* b_pointer)
+{
+	return *(( char* )a_pointer) - *(( char* )b_pointer);
 }
 
 ////// write header function
@@ -121,21 +127,34 @@ int main (int argc, char* argv[])
 
 	FILE *source;
 	source = fopen(argv[1], "rb");
-	fseek(source, 0L, SEEK_END);
+	fseek(source, 100, SEEK_END);
 	int source_size = ftell(source);
+	//char *buffer;
+	//size_t size;
+
+	//int pipe_fd_arr[2]; // pipe_fd_arr[0] == stdin
+
+	//FILE *stream = fdopen(source, 
+
+
+	printf("asdfa before stream asdf \n");
+	//stream = open_memstream(&buffer, &size);
+	//printf(stream, source);
+
 	printf("asdf asdf \n");
 
 	printf("source size %d\n", source_size);
 
 	rewind(source);
+	printf("ftell after rewind: %ld\n", ftell(source));
 
 	int input_binary_length = 3 * WIDTH * HEIGHT; // normal people call this a buffer
 	
 	char normalized_input[input_binary_length];
 	
 
-	//char read_through[source_size];;
-	char* read_through = malloc(sizeof(char));
+	char read_through[source_size];;
+	//char* read_through = malloc(sizeof(char));
 	char* read_through_2 = malloc(sizeof(char));
 
 	//read_through[	] = SEEK_END;
@@ -148,33 +167,48 @@ int main (int argc, char* argv[])
 
 	while (i < input_binary_length) 
 	{
-		if (read_through_index > 1005820)
+		if (false)
+		//if (read_through_index > 1005820)
 		{	
-			printf("i- %d\n", i);
-			printf("inputbinarylen- %d\n", input_binary_length);
-			fread(&read_through_2, 1, source_size, source);	
-			normalized_input[i] = 1;
-			i++;
-			//if (read_through_2[second_index] == EOF)
-			//	printf("EOF \n");
-			//if (read_through_2[second_index] != 0)
-			//{	
-			//	printf("second-index %d \n", second_index);
-			//	normalized_input[i] = read_through_2[second_index];
+			printf("i--- %d\n", i);
+			//printf("inputbinarylen- %d\n", input_binary_length);
+			fread(&read_through_2, 1, 1, source);	
+			//normalized_input[i] = 1;
+			//i++;
+			if (read_through_2[second_index] == EOF || read_through_2[second_index] == '\0')
+			{	
+				printf("EOF \n");
+				rewind(source);
+			}
+			if (read_through_2[second_index] != 0)
+			{	
+				printf("second-index %d \n", second_index);
+				normalized_input[i] = read_through_2[second_index];
 			//	printf("while if %c, %d\n", normalized_input[i], i);
-			//	i++;
-			//}
+				i++;
+			}
+			second_index++;
 			
 		} else {
 			
 			//printf("while\n");
-			fread(&read_through, 1, 1, source);	
-			printf("i    %d \n", i);
+			fread(&read_through, 1, source_size, source);
+			if (i == source_size)	
+				printf("i == source size   %d \n", i);
+			
+			if (read_through_index == source_size)	
+				printf("read_through_index == source size   %d \n", read_through_index);
+			//if (read_through[read_through_index] == EOF)
+			//if (read_through[read_through_index] == EOF || read_through[read_through_index] == '\0')
 			//printf("------ %d \n", read_through_index);
-			if (read_through[read_through_index] != 0)
+			//{
+			//	printf("EOF \n");
+			//	rewind(source);
+			//}
+			if (read_through[read_through_index] != '0')
 			{	
 				normalized_input[i] = read_through[read_through_index];
-				printf("while if %c, %d\n", normalized_input[i], i);
+				//printf("while if %c, %d\n", normalized_input[i], i);
 				i++;
 			}
 			//printf("after second if %d\n", read_through_index);
@@ -182,30 +216,44 @@ int main (int argc, char* argv[])
 			read_through_index++;
 		}
 	}
+	printf("final read thorugh index %d\n", read_through_index);
+	printf("final i %d\n", i);
 
+	printf("source size %d\n", source_size);
 	//// magic happens here -- write the pixels
+
+	// qsort(normalized_input, strlen(normalized_input), 1, compare_function);
 	
+	int n_index = 0;
 	for (int y = 0; y < HEIGHT; ++y)
 	{
 		for (int x = 0; x < WIDTH; ++x)
 		{
-		fread(&read_through, 1, 1, source);	
-
+		//fread(&read_through, 1, 1, source);	
+			//fputc(normalized_input[n_index], stdout);
+			fputc(normalized_input[x], tga);
+			//n_index++;
+			//fputc(normalized_input[n_index], stdout);
+			fputc(normalized_input[y], tga);
+			//n_index++;
+			//fputc(normalized_input[n_index], stdout);
+			fputc(normalized_input[n_index/255], tga);
 		// B G R order
+			n_index++;
 			if (x % 2 == 0)
 			//for (int inner = 0; inner < y; ++inner)
 			{
-				fputc(normalized_input[x]-y, tga);
-				fputc(normalized_input[y], tga);
-				fputc(normalized_input[x], tga);
+				//fputc(normalized_input[x]-y, tga);
+				//fputc(normalized_input[y], tga);
+				//fputc(normalized_input[x], tga);
 			}
 
 			if (x % 2 != 0)
 			//for (int inner = 0; inner < x; ++inner) 
 			{
-				fputc(normalized_input[y+y], tga);
-				fputc(normalized_input[y+y], tga);
-				fputc(normalized_input[x+y], tga);
+				//fputc(normalized_input[y+y], tga);
+				//fputc(normalized_input[y+y], tga);
+				//fputc(normalized_input[x+y], tga);
 			}
 		}
 	}
