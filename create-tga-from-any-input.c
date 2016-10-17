@@ -43,13 +43,6 @@ typedef struct {
 						 // :shrug_emoji:
 } targa_header;
 
-//int filter_zeros (char* input, char* normalized_input)
-//{
-	//char* input_arr = malloc(size_of(int));
-	//*input_arr = *input[
-	//int normalized_input_length = length; 
-//}
-
 int little_endianify (int number)
 {
 	return number % BYTE_RANGE;
@@ -127,94 +120,93 @@ int main (int argc, char* argv[])
 	write_header(header, tga);
 
 	FILE *source;
-
 	source = fopen(argv[1], "rb");
+	fseek(source, 0L, SEEK_END);
+	int source_size = ftell(source);
+	printf("asdf asdf \n");
+
+	printf("source size %d\n", source_size);
+
+	rewind(source);
 
 	int input_binary_length = 3 * WIDTH * HEIGHT; // normal people call this a buffer
 	
-	//char input[input_binary_length];
 	char normalized_input[input_binary_length];
 	
+
+	//char read_through[source_size];;
 	char* read_through = malloc(sizeof(char));
-	read_through[0] = 
-	fread(&read_through, 1, input_binary_length, source);	
-	
-	//int x = 0;
-	//in//t i = 0;
+	char* read_through_2 = malloc(sizeof(char));
 
-	//while (normalized_input[i] != '\0')
-	//{
-	//	if (input[x] != 0)
-	//	{
-	//		normalized_input[i] = input[x];
-	//		++i;
-	//	}
-	//	++x;
-	//}
-	//return normalized_inpu;
-	//fseek(
+	//read_through[	] = SEEK_END;
 
-	//circular buffer?
+	int i = 0;
+	int read_through_index = 0;
+	int second_index = 0;
 
-	
+	//fflush(source);
+
+	while (i < input_binary_length) 
+	{
+		if (read_through_index > 1005820)
+		{	
+			printf("i- %d\n", i);
+			printf("inputbinarylen- %d\n", input_binary_length);
+			fread(&read_through_2, 1, source_size, source);	
+			normalized_input[i] = 1;
+			i++;
+			//if (read_through_2[second_index] == EOF)
+			//	printf("EOF \n");
+			//if (read_through_2[second_index] != 0)
+			//{	
+			//	printf("second-index %d \n", second_index);
+			//	normalized_input[i] = read_through_2[second_index];
+			//	printf("while if %c, %d\n", normalized_input[i], i);
+			//	i++;
+			//}
+			
+		} else {
+			
+			//printf("while\n");
+			fread(&read_through, 1, 1, source);	
+			printf("i    %d \n", i);
+			//printf("------ %d \n", read_through_index);
+			if (read_through[read_through_index] != 0)
+			{	
+				normalized_input[i] = read_through[read_through_index];
+				printf("while if %c, %d\n", normalized_input[i], i);
+				i++;
+			}
+			//printf("after second if %d\n", read_through_index);
+		
+			read_through_index++;
+		}
+	}
+
 	//// magic happens here -- write the pixels
 	
-	//filter_zeros( &input, &normalized_input);  
-
-
 	for (int y = 0; y < HEIGHT; ++y)
 	{
-		for (int absolute_x = 0; absolute_x < WIDTH; ++absolute_x)
+		for (int x = 0; x < WIDTH; ++x)
 		{
-		int x = absolute_x;
 		fread(&read_through, 1, 1, source);	
-		//bool flag = true;
-		//	if (input == EOF) 
-		//		rewind(source);
-		
-		//if (input[x] == 0)
-		//{
-			//x += 1;
-			//flag = false;
-			//fputc(170, tga);
-			//fputc(100, tga);
-			//fputc(30, tga);
 
-			//WIDTH += 1;
-		//}
-		//x = inefficient_ignore_zeros(absolute_x, &input_binary_length, input);
-
-		//if (flag)
-		//{
 		// B G R order
 			if (x % 2 == 0)
 			//for (int inner = 0; inner < y; ++inner)
 			{
-				
-				//printf("asf\n");
-				fputc(read_through[x]-y, tga);
-				fputc(read_through[y], tga);
-				fputc(read_through[x], tga);
+				fputc(normalized_input[x]-y, tga);
+				fputc(normalized_input[y], tga);
+				fputc(normalized_input[x], tga);
 			}
 
 			if (x % 2 != 0)
 			//for (int inner = 0; inner < x; ++inner) 
 			{
-				//printf("xxxx\n");
-				fputc(read_through[y+y], tga);
-				fputc(read_through[y+y], tga);
-				fputc(read_through[x+y], tga);
+				fputc(normalized_input[y+y], tga);
+				fputc(normalized_input[y+y], tga);
+				fputc(normalized_input[x+y], tga);
 			}
-			//if ( x % 2 == 0 ) 
-			//{
-			//	fputc(input[x * y] + x, tga);
-			//	fputc(input[x * x] + x, tga);
-			//	fputc(input[y * y] + y, tga);
-			// } else {
-			//	fputc(input[x + y] + x, tga);
-			//	fputc(input[y], tga);
-			//	fputc(input[x + y], tga);
-			//}
 		}
 	}
 	//// magic ends here
