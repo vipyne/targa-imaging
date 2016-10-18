@@ -23,15 +23,15 @@
 ////// targa file header
 
 typedef struct {
-	char id_length;      // length of id field (number of bytes - max 255)
-	char map_type;       // colormap field (0 or 1; no map or 256 entry palette)
-	char image_type;     // ( 0 - no image data included
-											 //   1 - uncompressed, color mapped image
-											 //	  2 - uncompressed, RGB image
-											 //	  3 - uncompressed, black & white image
-											 //	  9 - run-length encoded(RLE-lossless compression),color mapped image
-											 //	 10 - RLE, RGB image
-											 //	 11 - compressed, black & white image )
+	char id_length;       // length of id field (number of bytes - max 255)
+	char map_type;        // colormap field (0 or 1; no map or 256 entry palette)
+	char image_type;      // ( 0 - no image data included
+											  //   1 - uncompressed, color mapped image
+											  //	  2 - uncompressed, RGB image
+											  //	  3 - uncompressed, black & white image
+											  //	  9 - run-length encoded(RLE-lossless compression),color mapped image
+											  //	 10 - RLE, RGB image
+											  //	 11 - compressed, black & white image )
 
 	int map_first;       // first entry index for color map
 	int map_length;      // total number of entries in color map
