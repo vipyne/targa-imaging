@@ -4,10 +4,11 @@
 // compile : $ gcc create-tga-from-any-input.c -o targa-exe
 // usage   : $ ./targa-exe input-file output-filename dimensions
 // example : $ ./targa-exe /usr/input/filename.txt /usr/output/filename.tga 1000
-//           ==> filename.tga that is 1000 x 1000 pixels large 
+//           ==> filename.tga that is 1000 x 1000 pixels large
 //
 // a lot of this is based on Grant Emery's file https://www.tjhsst.edu/~dhyatt/superap/code/targa.c thanks dude
 // author: vanessa pyne --- github.com/vipyne
+
 
 
 #include <stdio.h>
