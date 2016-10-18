@@ -25,8 +25,8 @@
 typedef struct {
 	char id_length;       // length of id field (number of bytes - max 255)
 	char map_type;        // colormap field (0 or 1; no map or 256 entry palette)
-	char image_type;      // ( 0 - no image data included
-                        //   1 - uncompressed, color mapped image
+	char image_type;			// ( 0 - no image data included
+												//   1 - uncompressed, color mapped image
 //	  2 - uncompressed, RGB image
 //	  3 - uncompressed, black & white image
 //	  9 - run-length encoded(RLE-lossless compression),color mapped image
