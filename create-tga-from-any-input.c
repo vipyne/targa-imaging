@@ -147,15 +147,18 @@ int main (int argc, char* argv[])
   char normalized_input[input_binary_length];
 
   // buffer for entire input file
-  char read_through[source_size];
+  char *read_through = (char*) malloc ( sizeof(char) * source_size );
 
   int i = 0;
   int read_through_index = 0;
-
   while (i < input_binary_length)
   {
-    fread(&read_through, 1, source_size, source);
-
+    fread(read_through, 1, source_size, source);
+    if (read_through_index >= source_size)
+    {  
+      rewind(source);   
+      read_through_index = 0;
+    }
     if (read_through[read_through_index] != '0')
     {
       normalized_input[i] = read_through[read_through_index];
@@ -163,6 +166,7 @@ int main (int argc, char* argv[])
     }
     read_through_index++;
   }
+  free(read_through);
   printf("^^^^ normalized buffer set, length: %d \n", (int) sizeof(normalized_input));
 
   //// magic happens here -- write the pixels
@@ -171,6 +175,7 @@ int main (int argc, char* argv[])
 
   qsort(normalized_sorted, strlen(normalized_input), 1, compare_function);
 
+  printf("^^^^ writing pixels \n");
   int n_index = 0;
   for (int y = 0; y < HEIGHT; ++y)
   {
