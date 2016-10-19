@@ -46,7 +46,7 @@ char image_type;      // ( 0 - no image data included
   char bits_per_pixel; // number of bits per pixel
 
   char misc;           // srsly? "scan origin and alpha bits" this example uses scan origin
-                         // honestly, don't know what's going on here. we pass in a hex value
+                       // honestly, don't know what's going on here. we pass in a hex value
                        // :shrug_emoji:
 } targa_header;
 
