@@ -146,6 +146,9 @@ int main (int argc, char* argv[])
   // buffer for pixel values (no zeros)
   char normalized_input[input_binary_length];
 
+  // buffer for sorted pixel values (still no zeros)
+  char normalized_sorted[input_binary_length];
+
   // buffer for entire input file
   char *read_through = (char*) malloc ( sizeof(char) * source_size );
 
@@ -169,14 +172,12 @@ int main (int argc, char* argv[])
   free(read_through);
   printf("^^^^ normalized buffer set, length: %d \n", (int) sizeof(normalized_input));
 
-  //// magic happens here -- write the pixels
-  char normalized_sorted[input_binary_length];
   strncpy(normalized_sorted, normalized_input, input_binary_length);
-
-  qsort(normalized_sorted, strlen(normalized_input), 1, compare_function);
+  qsort(normalized_sorted, strlen(normalized_input), sizeof(char), compare_function);
 
   printf("^^^^ writing pixels \n");
   int n_index = 0;
+  //// magic happens here
   for (int y = 0; y < HEIGHT; ++y)
   {
     for (int x = 0; x < WIDTH; ++x)
@@ -184,25 +185,9 @@ int main (int argc, char* argv[])
       // pixels read in B G R order
       fputc(normalized_input[n_index], tga);
       fputc(read_through[n_index], tga);
-      fputc(normalized_sorted[n_index], tga);
+      fputc(normalized_sorted[input_binary_length - n_index], tga);
 
       n_index++;
-    }
-
-    // playing around with other ways to
-    // interpret the raw data
-    if (x % 2 == 0)
-    {
-      //fputc(normalized_input[x]-y, tga);
-      //fputc(normalized_input[y], tga);
-      //fputc(normalized_input[x], tga);
-    }
-
-    if (x % 2 != 0)
-    {
-      //fputc(normalized_input[y+y], tga);
-      //fputc(normalized_input[y+y], tga);
-      //fputc(normalized_input[x+y], tga);
     }
   }
   //// magic ends here
