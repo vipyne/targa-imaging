@@ -19,6 +19,6 @@ $ ./targa-exe /usr/input/filename.txt /usr/output/filename.tga 1000
           
 yields => a targa image `filename.tga` that is 1000 x 1000 pixels large
 
-Basically, if you like glitchart and archaic image formats, than you'll love this.
+Basically, if you like glitchart and archaic image formats, then you'll love this.
 
 ![new alt](https://github.com/vipyne/targa-imaging/blob/master/readme.png) 
