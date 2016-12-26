@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <string.h>
+#include <errno.h>
 
 #define BYTE_RANGE 256
 #define RGBA 3 // 3 for RGB, 4 for RGBA
@@ -96,20 +97,58 @@ void write_header (targa_header header, FILE *tga)
   fputc( header.misc, tga );
 }
 
+void print_directions(void)
+{
+  printf("$ ./targa-exe input-file output-filename dimension\n");
+}
+
 ////// MAIN
 
 int main (int argc, char* argv[])
 {
-  FILE *tga;                 // pointer to file that we will write
+  if (argc != 4) {
+    printf("\n");
+    printf("Please enter correct number of arguments. --\n");
+    print_directions();
+    printf("\n");
+    return 1;
+  }
+
+  FILE *source;
+  source = fopen(argv[1], "rb");
+
+  if (source == NULL) {
+    printf("Source file `%s` cannot be found. --\n", argv[1]);
+    return 1;
+  }
+
+  FILE *tga;                    // pointer to file that we will write
+  tga = fopen(argv[2], "wbx");  // `x` needed for `errno` to work
+  int overwrite_warning = errno;
+
+  if (overwrite_warning != 0) {
+    printf("Destination file `%s` already exists. --\n", argv[2]);
+    return 1;
+  }
+
+  int HEIGHT = atoi(argv[3]);
+  int WIDTH = atoi(argv[3]);
+
+  if (errno != 0) {
+    fclose(tga);
+    unlink(argv[2]);
+
+    printf("`%s` is not a valid dimension. Please use a number. --\n", argv[3]);
+    return 1;
+  }
+
+
+  // intialize and set TARGA header values
   targa_header header;       // variable of targa_header type
 
   int x, y;                  // coordinates for `for` loops to pass in
                              // correct number of pixel values
 
-  int HEIGHT = atoi(argv[3]);
-  int WIDTH = atoi(argv[3]);
-
-  // set header values
   header.id_length = 0;
   header.map_type = 0;
   header.image_type = 2;     // uncompressed RGB image
@@ -127,14 +166,11 @@ int main (int argc, char* argv[])
   header.misc = 0x20;       // scan from upper left corner, need to investigate this further
 
   // start to write file
-  tga = fopen(argv[2], "wb");
-
   write_header(header, tga);
   printf("^^^^ header written\n");
 
   // source input file
-  FILE *source;
-  source = fopen(argv[1], "rb");
+
   fseek(source, 0, SEEK_END);
   int source_size = ftell(source);
   rewind(source);
@@ -158,8 +194,8 @@ int main (int argc, char* argv[])
   {
     fread(read_through, 1, source_size, source);
     if (read_through_index >= source_size)
-    {  
-      rewind(source);   
+    {
+      rewind(source);
       read_through_index = 0;
     }
     if (read_through[read_through_index] != '0')
