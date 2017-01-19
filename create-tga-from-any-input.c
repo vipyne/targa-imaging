@@ -228,14 +228,21 @@ int main (int argc, char* argv[])
 			double super_secret_nerd = super_nerd * 100.0;
 			int brain = (int)brain;
 
+			if (y > HEIGHT/2) {
 			//printf("narf %d\n", narf);
       // pixels read in B G R order
       fputc( read_through[n_index]+ brain , tga);
       fputc(normalized_input[n_index] + narf, tga);
       fputc( (x + y)/10, tga);
-      //fputc( (normalized_sorted[input_binary_length + n_index] +  y -x), tga);
-			//fputc( (normalized_input[n_index]%255) + x , tga);
+			} else {
+      
+			fputc( (normalized_input[n_index]%255)- brain + x , tga);
 			
+
+			fputc( (read_through[n_index]) + y/10 , tga);
+			fputc( (normalized_sorted[input_binary_length + n_index] +  y -x), tga);
+
+			}			
       n_index++;
     }
   }
