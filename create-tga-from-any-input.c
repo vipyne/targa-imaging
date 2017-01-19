@@ -232,7 +232,7 @@ int main (int argc, char* argv[])
       // pixels read in B G R order
       fputc( read_through[n_index]+ brain , tga);
       fputc(normalized_input[n_index] + narf, tga);
-      fputc( (x - y)/10, tga);
+      fputc( (x + y)/10, tga);
       //fputc( (normalized_sorted[input_binary_length + n_index] +  y -x), tga);
 			//fputc( (normalized_input[n_index]%255) + x , tga);
 			
