@@ -219,10 +219,11 @@ int main (int argc, char* argv[])
   {
     for (int x = 0; x < WIDTH; ++x)
     {
-			int clamped = read_through[n_index-x]/73 > 100 ? 100 : read_through[n_index-x]/73;
+			int clamped = read_through[n_index-x]/73 > 1 ? 1 : read_through[n_index-x]/73;
 			double sinThing = n_index;
 			double nerd = sin(sinThing);
-			int narf = (int)nerd * 100;
+			double bah = nerd * 100.0;
+			int narf = (int)bah;
 			printf("narf %d\n", narf);
       // pixels read in B G R order
       fputc( read_through[n_index]+ y -x, tga);
