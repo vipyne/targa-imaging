@@ -17,6 +17,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 
 #define BYTE_RANGE 256
 #define RGBA 3 // 3 for RGB, 4 for RGBA
@@ -218,11 +219,18 @@ int main (int argc, char* argv[])
   {
     for (int x = 0; x < WIDTH; ++x)
     {
+			int clamped = read_through[n_index-x]/73 > 100 ? 100 : read_through[n_index-x]/73;
+			double sinThing = n_index;
+			double nerd = sin(sinThing);
+			int narf = (int)nerd * 100;
+			printf("narf %d\n", narf);
       // pixels read in B G R order
-      fputc(normalized_input[n_index], tga);
-      fputc(read_through[n_index], tga);
-      fputc(normalized_sorted[input_binary_length - n_index], tga);
-
+      fputc( read_through[n_index]+ y -x, tga);
+      fputc( clamped, tga);
+      //fputc( (normalized_sorted[input_binary_length + n_index] +  y -x), tga);
+      fputc(normalized_input[n_index]/8 + narf, tga);
+			//fputc( (normalized_input[n_index]%255) + x , tga);
+			
       n_index++;
     }
   }
