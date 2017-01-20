@@ -229,7 +229,7 @@ int main (int argc, char* argv[])
 			int brain = (int)brain;
 
       fputc( (x + y)/8 + brain, tga);
-			if (x > HEIGHT/3) {
+			if (x-y > HEIGHT/5) {
 			//printf("narf %d\n", narf);
       // pixels read in B G R order
       fputc(normalized_input[n_index] + narf, tga);
