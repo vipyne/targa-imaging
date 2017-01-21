@@ -235,16 +235,17 @@ int main (int argc, char* argv[])
 
       fputc( (narf)/7, tga);
 			//if (x-(y-narf) < HEIGHT/5) {
-			if (y-tah < HEIGHT/7) {
+			//if (y-tah < HEIGHT/7) {
+			if (x> HEIGHT/(float)narf*20) {
 			//printf("narf %d\n", narf);
       // pixels read in B G R order
-      fputc(normalized_input[n_index] + tah, tga);
-      fputc( read_through[n_index]+ brain , tga);
+      fputc(normalized_input[n_index] + (float)tah+(float)narf, tga);
+      fputc( read_through[n_index]+ brain+y , tga);
 			} else {
 
 			//fputc( (normalized_input[n_index]%255)- brain + x , tga);
 			fputc( (normalized_sorted[input_binary_length + n_index] +  y -x), tga);
-			fputc( (read_through[n_index]) + y/11 , tga);
+			fputc( (read_through[n_index]) + (y/(float)tah), tga);
 
 			}			
       n_index++;
