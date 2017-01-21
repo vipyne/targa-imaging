@@ -240,15 +240,15 @@ int main (int argc, char* argv[])
 			//if (x-(y-narf) < HEIGHT/5) {
 			//if (y-tah < HEIGHT/7) {
 			
-			printf("flatsin y %f\n", (float)sin(y)*100);
-			if (y > (HEIGHT / 15 + (float)sin(y/5)*100) -x ) {
+			//printf("flatsin y %f\n", (float)sin(y)*100);
+			if (y > (HEIGHT/2 + (float)sin(y/15)*100) -(x+(float)sin(x/100)) ) {
 			//printf("narf %d\n", narf);
       // pixels read in B G R order
       
-				fputc(normalized_input[n_index] + (float)tan(x), tga);
+				fputc(normalized_input[n_index] + (float)tan(x)*100, tga);
       //fputc( normalized_input[n_index]+ brain+y , tga);
       //fputc( normalized_input[n_index]+ brain+y , tga);
-				fputc( normalized_sorted[n_index]+(float)sin(y)*100, tga);
+				fputc( normalized_input[n_index]+(float)sin(y)*100, tga);
 			} else {
 
 			//fputc( (normalized_input[n_index]%255)- brain + x , tga);
