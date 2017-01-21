@@ -241,7 +241,8 @@ int main (int argc, char* argv[])
 			//if (y-tah < HEIGHT/7) {
 			
 			//printf("flatsin y %f\n", (float)sin(y)*100);
-			if (y > (HEIGHT/2 + (float)sin(y/15)*100) -(x+(float)sin(x/100)) ) {
+			if (y > (HEIGHT/1.5 + (float)sin(y/15)*100) -(x+(float)sin(x/100)) ) {
+				n_index--;
 			//printf("narf %d\n", narf);
       // pixels read in B G R order
       
