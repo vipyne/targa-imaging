@@ -196,6 +196,7 @@ int main (int argc, char* argv[])
     fread(read_through, 1, source_size, source);
     if (read_through_index >= source_size)
     {
+			//printf("rewinding\n");
       rewind(source);
       read_through_index = 0;
     }
@@ -219,7 +220,9 @@ int main (int argc, char* argv[])
   {
     for (int x = 0; x < WIDTH; ++x)
     {
-			int clamped = read_through[n_index-x]/73 > 1 ? 1 : read_through[n_index-x]/73;
+
+	//printf("inside loop %d\n", n_index);
+			//hey silly, don't use `read_through` array in here... its not always large enough			
 			double sinThing = n_index/4.0;
 			double nerd = sin(sinThing);
 			double bah = nerd * 100.0;
@@ -233,19 +236,25 @@ int main (int argc, char* argv[])
 			double tannyhundo = tanny * 100.0;
 			int tah = (int)tannyhundo;
 
-      fputc( (narf)/7, tga);
+      fputc( x-(narf)/7, tga);
 			//if (x-(y-narf) < HEIGHT/5) {
 			//if (y-tah < HEIGHT/7) {
+			
 			if (x> HEIGHT/(float)narf*20) {
 			//printf("narf %d\n", narf);
       // pixels read in B G R order
-      fputc(normalized_input[n_index] + (float)tah+(float)narf, tga);
-      fputc( read_through[n_index]+ brain+y , tga);
+      
+				fputc(normalized_sorted[n_index] + (float)tah+(float)narf, tga);
+      //fputc( normalized_input[n_index]+ brain+y , tga);
+      //fputc( normalized_input[n_index]+ brain+y , tga);
+				fputc( normalized_sorted[n_index]+ brain+y , tga);
 			} else {
 
 			//fputc( (normalized_input[n_index]%255)- brain + x , tga);
-			fputc( (normalized_sorted[input_binary_length + n_index] +  y -x), tga);
-			fputc( (read_through[n_index]) + (y/(float)tah), tga);
+				fputc( (normalized_sorted[n_index] +  y - x), tga);
+			//fputc( (normalized_input[n_index]) + (y/(float)tah), tga);
+				fputc( (normalized_sorted[n_index]) + ((y-x)/(float)brain), tga);
+			//fputc( (normalized_input[n_index]) + (y/(float)tah), tga);
 
 			}			
       n_index++;
