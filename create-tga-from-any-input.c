@@ -236,7 +236,7 @@ int main (int argc, char* argv[])
 			double tannyhundo = tanny * 100.0;
 			int tah = (int)tannyhundo;
 
-      fputc( x-y/(float)sin(x)-(narf)/17, tga);
+      fputc( (x/2)-(y/3)/(float)sin(x)-(narf)/17, tga);
 			//if (x-(y-narf) < HEIGHT/5) {
 			//if (y-tah < HEIGHT/7) {
 			
@@ -245,16 +245,16 @@ int main (int argc, char* argv[])
 			//printf("narf %d\n", narf);
       // pixels read in B G R order
       
-				fputc(normalized_input[n_index] + (float)tan(x)*100, tga);
+				fputc(normalized_input[n_index] + (float)tan(x)-y, tga);
       //fputc( normalized_input[n_index]+ brain+y , tga);
       //fputc( normalized_input[n_index]+ brain+y , tga);
-				fputc( normalized_input[n_index]+(float)sin(y)*100, tga);
+				fputc( normalized_input[n_index]+(float)sin(y)*50, tga);
 			} else {
 
 			//fputc( (normalized_input[n_index]%255)- brain + x , tga);
-				fputc( (normalized_input[n_index] +  (float)cos(y) - x), tga);
+				fputc( (normalized_input[n_index] +  (float)cos(y) - x-y), tga);
 			//fputc( (normalized_input[n_index]) + (y/(float)tah), tga);
-				fputc( (normalized_sorted[n_index]) + ((y-x)/(float)brain), tga);
+				fputc( (normalized_sorted[n_index]) + ((y-x)/(float)brain)-y, tga);
 			//fputc( (normalized_input[n_index]) + (y/(float)tah), tga);
 
 			}			
