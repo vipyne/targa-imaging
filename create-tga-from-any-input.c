@@ -241,19 +241,23 @@ int main (int argc, char* argv[])
 			//if (y-tah < HEIGHT/7) {
 			
 			//printf("flatsin y %f\n", (float)sin(y)*100);
-			if (y > (HEIGHT/1.5 + (float)sin(y/15)*100) -(x+(float)sin(x/100)) ) {
-				n_index--;
+			if (y - 330> ((float)sin(y/15)*100) -(x+(float)sin(x/100)) ) {
+				//n_index--;
 			//printf("narf %d\n", narf);
       // pixels read in B G R order
       
-				fputc(normalized_input[n_index] + (float)tan(x)-y, tga);
-      //fputc( normalized_input[n_index]+ brain+y , tga);
-      //fputc( normalized_input[n_index]+ brain+y , tga);
-				fputc( normalized_input[n_index]+(float)sin(y)*50, tga);
-			} else {
 
+			///// BOTTOM
+				fputc(normalized_input[n_index] + (float)sin(x/4)-y/3, tga);
+      //fputc( normalized_input[n_index]+ brain+y , tga);
+      //fputc( normalized_input[n_index]+ brain+y , tga);
+				fputc( normalized_input[n_index]+(float)sin(y/4)-x/3, tga);
+			} else {
+		
+			////// TOP
+				n_index--;
 			//fputc( (normalized_input[n_index]%255)- brain + x , tga);
-				fputc( (normalized_input[n_index] +  (float)cos(y) - x-y), tga);
+				fputc( (normalized_input[n_index] -  (float)cos(y) - x-y), tga);
 			//fputc( (normalized_input[n_index]) + (y/(float)tah), tga);
 				fputc( (normalized_sorted[n_index]) + ((y-x)/(float)brain)-y, tga);
 			//fputc( (normalized_input[n_index]) + (y/(float)tah), tga);
