@@ -253,7 +253,7 @@ int main (int argc, char* argv[])
 
 			float anumber =  pow(sin( (2.0*theta-PI) / 24.0), 5.0 );
 			int butter = pow((float)x, (float)sin(11*theta) ) - 1.5*cos(4*theta) + anumber;
-			printf("asdf %d\n", butter);
+			//printf("asdf %d\n", butter);
 
 			//if (y - 330> ((float)sin(y/15)*100) -(x+(float)sin(x/100)) ) { ////// IF
 			if (y > butter ) { ////// IF
@@ -261,7 +261,7 @@ int main (int argc, char* argv[])
       
 
 			///// BOTTOM
-				fputc(normalized_input[n_index] + (float)sin(x/4)-y/3, tga);
+				fputc(normalized_input[n_index] + (float)sin(x/4)-y/6, tga);
       //fputc( normalized_input[n_index]+ brain+y , tga);
       //fputc( normalized_input[n_index]+ brain+y , tga);
 				fputc( normalized_input[n_index]+(float)sin(y/4)-x/3, tga);
@@ -270,7 +270,7 @@ int main (int argc, char* argv[])
 			////// TOP
 				n_index--;
 			//fputc( (normalized_input[n_index]%255)- brain + x , tga);
-				fputc( (normalized_input[n_index] -  (float)cos(y) - x-y), tga);
+				fputc( (normalized_input[n_index] -  (float)cos(y) - x-y/3), tga);
 			//fputc( (normalized_input[n_index]) + (y/(float)tah), tga);
 				fputc( (normalized_sorted[n_index]) + ((y-x)/(float)brain)-y, tga);
 			//fputc( (normalized_input[n_index]) + (y/(float)tah), tga);
