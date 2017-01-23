@@ -21,6 +21,7 @@
 
 #define BYTE_RANGE 256
 #define RGBA 3 // 3 for RGB, 4 for RGBA
+#define PI 3.14159265358979323846
 
 ////// targa file header
 
@@ -215,13 +216,22 @@ int main (int argc, char* argv[])
 
   printf("^^^^ writing pixels \n");
   int n_index = 0;
+
+
+	//clock_t startTime = clock();
+  //float dt = (float)(clock() - endTime)/CLOCKS_PER_SEC;
+  //float theta += dt * radiansPerSecond;
+
+	float theta = 0.0;
+
+
   //// magic happens here
   for (int y = 0; y < HEIGHT; ++y)
   {
     for (int x = 0; x < WIDTH; ++x)
     {
+      // pixels read in B G R order
 
-	//printf("inside loop %d\n", n_index);
 			//hey silly, don't use `read_through` array in here... its not always large enough			
 			double sinThing = n_index/5.0;
 			double nerd = sin(sinThing);
@@ -236,15 +246,18 @@ int main (int argc, char* argv[])
 			double tannyhundo = tanny * 100.0;
 			int tah = (int)tannyhundo;
 
-      fputc( (x/2)-(y/3)/(float)sin(x)-(narf)/17, tga);
+      fputc( (x/2)-(y/3)/(float)sin(x)-(narf)/17, tga); ////// BLUE
 			//if (x-(y-narf) < HEIGHT/5) {
 			//if (y-tah < HEIGHT/7) {
 			
-			//printf("flatsin y %f\n", (float)sin(y)*100);
-			if (y - 330> ((float)sin(y/15)*100) -(x+(float)sin(x/100)) ) {
-				//n_index--;
-			//printf("narf %d\n", narf);
-      // pixels read in B G R order
+
+			float anumber =  pow(sin( (2.0*theta-PI) / 24.0), 5.0 );
+			int butter = pow((float)x, (float)sin(11*theta) ) - 1.5*cos(4*theta) + anumber;
+			printf("asdf %d\n", butter);
+
+			//if (y - 330> ((float)sin(y/15)*100) -(x+(float)sin(x/100)) ) { ////// IF
+			if (y > butter ) { ////// IF
+				n_index--;
       
 
 			///// BOTTOM
@@ -264,6 +277,7 @@ int main (int argc, char* argv[])
 
 			}			
       n_index++;
+			theta+=0.1;
     }
   }
   //// magic ends here
