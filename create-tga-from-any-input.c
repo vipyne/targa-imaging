@@ -251,8 +251,8 @@ int main (int argc, char* argv[])
 			//if (y-tah < HEIGHT/7) {
 			
 
-			float anumber =  pow(sin( (2.0*theta-PI) / 4.0), 5.0 );
-			int butter = pow((float)x, (float)sin(1*theta) ) - 0.5*cos(4*theta) + anumber;
+			float anumber = pow(sin( (2.0*theta-PI) / 4.0), 5.0 );
+			int butter = pow((float)x, (float)sin(1*theta) ) - 0.5*cos(4*theta) + anumber + x/8;
 			//printf("asdf %d\n", butter);
 
 			//if (y - 330> ((float)sin(y/15)*100) -(x+(float)sin(x/100)) ) { ////// IF
