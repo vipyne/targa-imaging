@@ -260,13 +260,13 @@ int main (int argc, char* argv[])
 				n_index--;
       
 			///// BOTTOM
-				fputc(normalized_input[n_index] + (float)sin(x/4)-y/6, tga); ///// GREEN
+				fputc(normalized_input[n_index] + (float)sin(x/10)-y/6, tga); ///// GREEN
 				fputc( normalized_input[n_index]+(float)sin(theta)-x/30, tga); ///// RED
 			} else {
 		
 			////// TOP
 				n_index--;
-				fputc( (normalized_input[n_index] -  (float)cos(x+y) - x-y/3), tga); ///// GREEN
+				fputc( (normalized_input[n_index] -  (float)cos(x+y) +x-y/3), tga); ///// GREEN
 				//fputc( 100, tga); ////// RED 
 				fputc( (normalized_sorted[n_index]) + ((x-y)/(float)tah), tga); ////// RED 
 			}			
