@@ -251,8 +251,8 @@ int main (int argc, char* argv[])
 			//if (y-tah < HEIGHT/7) {
 			
 
-			float anumber = pow(sin( (2.0*theta-PI) / 4.0), 5.0 );
-			int butter = pow((float)x, (float)sin(1*theta) ) - 0.5*cos(4*theta) + anumber + x/8;
+			float anumber = pow(sin( (2.0*x-PI) / 4.0), 5.0 );
+			int butter = pow((float)x, (float)sin(1*theta) ) - 0.5*cos(4*theta) + anumber + pow((float)x, (float)cos(theta/2.0));
 			//printf("asdf %d\n", butter);
 
 			//if (y - 330> ((float)sin(y/15)*100) -(x+(float)sin(x/100)) ) { ////// IF
@@ -261,15 +261,16 @@ int main (int argc, char* argv[])
       
 			///// BOTTOM
 				fputc(normalized_input[n_index] + (float)sin(theta*100)-y/5, tga); ///// GREEN
+				//fputc(normalized_input[n_index] + (float)sin(theta*100)-(float)sin(y/5), tga); ///// GREEN
 				fputc( normalized_input[n_index]+(float)sin(theta*500)-x/40, tga); ///// RED
 			} else {
 		
 			////// TOP
 				n_index--;
-				fputc( (normalized_input[n_index] - (float)cos(x+y) +x-y/3), tga); ///// GREEN
 				//n_index--;
 				//fputc( 100, tga); ////// RED 
 				fputc( (normalized_sorted[n_index]) + ((x-y)/(float)tah), tga); ////// RED 
+				fputc( (normalized_input[n_index] - (float)cos(x+y) -x+y/42)/3, tga); ///// GREEN
 			}			
       n_index++;
 			theta+=0.01;
