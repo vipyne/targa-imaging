@@ -246,8 +246,8 @@ int main (int argc, char* argv[])
 			double tannyhundo = tanny * 100.0;
 			int tah = (int)tannyhundo;
 
-      fputc( (x%220)-(y%700)/(float)log(x-y), tga); ////// BLUE
-      //fputc( (x%220)-(y%700)/(float)sin(x-y), tga); ////// BLUE
+      //fputc( (x%220)-(y%700)/(float)log(x-y), tga); ////// BLUE
+      fputc( fabsf((x%200)-(y)/(float)sin(x-y) ), tga); ////// BLUE
 			//if (x-(y-narf) < HEIGHT/5) {
 			//if (y-tah < HEIGHT/7) {
 			
@@ -258,7 +258,7 @@ int main (int argc, char* argv[])
 			//printf("butter %f\n", butter);
 
 			//if (y - 330> ((float)sin(y/15)*100) -(x+(float)sin(x/100)) ) { ////// IF
-			if (x > butter+y*4 || y > butter+x*2 ) { ////// IF
+			if (x > butter+y*(float)log(400) || y > butter+x*(float)log(100) ) { ////// IF
 				n_index++;
       
 			///// BOTTOM
@@ -272,7 +272,7 @@ int main (int argc, char* argv[])
 				//fputc( 100, tga); ////// RED 
 				fputc( (normalized_sorted[n_index]) + ((x-y)/(float)brain), tga); ////// RED 
 				n_index--;
-				fputc( (normalized_input[n_index] - (float)cos(x+y) -x+y/42)/3+theta, tga); ///// GREEN
+				fputc( (normalized_input[n_index] - (float)cos(x+y) -x+y/42)/3+theta*255, tga); ///// GREEN
 			}			
       n_index++;
 			theta+=0.01;
