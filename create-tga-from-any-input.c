@@ -254,11 +254,12 @@ int main (int argc, char* argv[])
 
 			float anumber = pow(sin( (4.0*y/x-PI) / 4.0), 5.0 );
 			//int butter = pow((float)x, (float)sin(normalized_sorted[n_index]) ) - 0.5*cos(4*theta) + anumber + pow((float)y, (float)cos(x/2.0));
-			float butter = sin(theta)*100.0;
+			float butter = sin(theta*10.0)*250.0 - (float)sin(theta/250.0)*200.0;
 			//printf("butter %f\n", butter);
 
 			//if (y - 330> ((float)sin(y/15)*100) -(x+(float)sin(x/100)) ) { ////// IF
-			if (x > butter+y*(float)log(400) || y > butter+x*(float)log(100) ) { ////// IF
+			if (y > butter+(x-50)*(float)log(100) ) { ////// IF
+			//if (x > butter+y*(float)log(400) || y > butter+x*(float)log(100) ) { ////// IF
 				n_index++;
       
 			///// BOTTOM
@@ -272,10 +273,10 @@ int main (int argc, char* argv[])
 				//fputc( 100, tga); ////// RED 
 				fputc( (normalized_sorted[n_index]) + ((x-y)/(float)brain), tga); ////// RED 
 				n_index--;
-				fputc( (normalized_input[n_index] - (float)cos(x+y) -x+y/42)/3+theta*255, tga); ///// GREEN
+				fputc( (normalized_input[n_index] - (float)sin(theta/10.0) - x - y/2) / 3.7, tga); ///// GREEN
 			}			
       n_index++;
-			theta+=0.01;
+			theta+=0.001;
     }
   }
   //// magic ends here
