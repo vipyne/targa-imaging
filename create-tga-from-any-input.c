@@ -17,6 +17,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 
 #define BYTE_RANGE 256
 #define RGBA 3 // 3 for RGB, 4 for RGBA
@@ -213,17 +214,19 @@ int main (int argc, char* argv[])
 
   printf("^^^^ writing pixels \n");
   int n_index = 0;
+	float theta = 0;
   //// magic happens here
   for (int y = 0; y < HEIGHT; ++y)
   {
     for (int x = 0; x < WIDTH; ++x)
     {
       // pixels read in B G R order
-      fputc(normalized_input[n_index], tga);
-      fputc(read_through[n_index], tga);
-      fputc(normalized_sorted[input_binary_length - n_index], tga);
+      fputc(normalized_input[n_index] + y, tga);
+      fputc(read_through[n_index] + (float)sin(theta), tga);
+      fputc(normalized_sorted[input_binary_length - n_index] + (float)sin(theta/10.0)*x, tga);
 
       n_index++;
+			theta+=0.001;
     }
   }
   //// magic ends here
