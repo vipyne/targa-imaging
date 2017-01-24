@@ -221,8 +221,8 @@ int main (int argc, char* argv[])
     for (int x = 0; x < WIDTH; ++x)
     {
       // pixels read in B G R order
-      fputc(normalized_input[n_index] + y, tga);
-      fputc(read_through[n_index] + (float)sin(theta), tga);
+      fputc(normalized_input[n_index] + y + (float)log(theta/20.0), tga);
+      fputc(normalized_input[n_index] + (float)sin(theta), tga);
       fputc(normalized_sorted[input_binary_length - n_index] + (float)sin(theta/10.0)*x, tga);
 
       n_index++;
