@@ -104,6 +104,16 @@ void print_directions(void)
   printf("$ ./targa-exe input-file output-filename dimension\n");
 }
 
+
+////// CUDA KERNEL
+__global__
+void thisIsBasicallyAShaderInMyBook(int n, float a, float *x, float *y)
+{
+  int i = blockIdx.x*blockDim.x + threadIdx.x;
+  if (i < n) y[i] = a*x[i] + y[i];
+}
+
+
 ////// MAIN
 
 int main (int argc, char* argv[])
@@ -143,7 +153,6 @@ int main (int argc, char* argv[])
     printf("`%s` is not a valid dimension. Please use a number. --\n", argv[3]);
     return 1;
   }
-
 
   // intialize and set TARGA header values
   targa_header header;       // variable of targa_header type
@@ -189,6 +198,12 @@ int main (int argc, char* argv[])
 
   // buffer for entire input file
   char *read_through = (char*) malloc ( sizeof(char) * source_size );
+
+	// CUDA buffers for the above
+	int *cuda_input_binary_length;
+
+	cudaMalloc(&cu
+
 
   int i = 0;
   int read_through_index = 0;
@@ -248,6 +263,21 @@ int main (int argc, char* argv[])
 
       //fputc( (x%220)-(y%700)/(float)log(x-y), tga); ////// BLUE
       fputc( fabsf((x%200)-(y)/(float)sin(x-y) ), tga); ////// BLUE
+			double sinThing = n_index/5.0;
+			double nerd = sin(sinThing);
+			double bah = nerd * 100.0;
+			int narf = (int)bah;
+			
+			double super_nerd = cos(sinThing);
+			double super_secret_nerd = super_nerd * 100.0;
+			int brain = (int)brain;
+			
+			double tanny = tan(sinThing);
+			double tannyhundo = tanny * 100.0;
+			int tah = (int)tannyhundo;
+
+      //fputc( (x%220)-(y%700)/(float)log(x-y), tga); ////// BLUE
+      fputc( fabsf((x%200)-(y)/(float)sin(x-y) ), tga); ////// BLUE
 			//if (x-(y-narf) < HEIGHT/5) {
 			//if (y-tah < HEIGHT/7) {
 			
@@ -272,18 +302,3 @@ int main (int argc, char* argv[])
 				n_index--;
 				//fputc( 100, tga); ////// RED 
 				fputc( (normalized_sorted[n_index]) + ((x-y)/(float)brain), tga); ////// RED 
-				n_index--;
-				fputc( (normalized_input[n_index] - (float)sin(theta/10.0) - x - y/2) / 3.7 + butter/3, tga); ///// GREEN
-			}			
-      n_index++;
-			theta+=0.001;
-    }
-  }
-  //// magic ends here
-
-  fclose(tga);
-  fclose(source);
-  printf("^^^^ finished! marvel at your targa!\n");
-
-  return 0;
-}

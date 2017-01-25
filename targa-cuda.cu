@@ -107,40 +107,44 @@ void print_directions(void)
 
 ////// CUDA KERNEL
 __global__
-void thisIsBasicallyAShaderInMyBook(int n, float a, float *x, float *y)
+void thisIsBasicallyAShaderInMyBook(int n, char *gpu_normalized_input, char *gpu_normalized_sorted, char *gpu_output)
 {
   int i = blockIdx.x * blockDim.x + threadIdx.x;
-  if (i < n) y[i] = a*x[i] + y[i];
-
-	//printf("^^^^ writing pixels \n");
-  int n_index = 0;
-	float theta = 0.0;
-
-  //// magic happens here
-  for (int y = 0; y < HEIGHT; ++y)
-  {
-    for (int x = 0; x < WIDTH; ++x)
-    {
-      // pixels read in B G R order
-      fputc( fabsf((x%200)-(y)/(float)sin(x-y) ), tga); ////// BLUE
-
-			float butter = sin(theta*10.0)* (250.0-y) - (float)sin(theta/250.0)*200.0 - 200.0;
-
-			if (y > butter+(x-50)*(float)log(100) ) { ////// IF
-				n_index++;
-				fputc(normalized_input[n_index] + (float)sin(n_index*theta)-y/5, tga); ///// GREEN
-				fputc( normalized_sorted[n_index]+(float)log(normalized_sorted[n_index]*500)-x/40, tga); ///// RED
-			} else {
-				n_index--;
-				fputc( (normalized_sorted[n_index]) + ((x-y)/(float)brain), tga); ////// GREEN
-				n_index--;
-				fputc( (normalized_input[n_index] - (float)sin(theta/10.0) - x - y/2) / 3.7 + butter/3, tga); ///// RED
-			}			
-      n_index++;
-			theta+=0.001;
-    }
+  // if (i < n) y[i] = a*x[i] + y[i];
+  if (i < n) {
+    //gpu_output[i] = 0x21;
+    gpu_output[i] = gpu_normalized_sorted[i];
   }
-  //// magic ends here
+
+	// //printf("^^^^ writing pixels \n");
+ //  int n_index = 0;
+	// float theta = 0.0;
+
+ //  //// magic happens here
+ //  for (int y = 0; y < HEIGHT; ++y)
+ //  {
+ //    for (int x = 0; x < WIDTH; ++x)
+ //    {
+ //      // pixels read in B G R order
+ //      fputc( fabsf((x%200)-(y)/(float)sin(x-y) ), tga); ////// BLUE
+
+	// 		float butter = sin(theta*10.0)* (250.0-y) - (float)sin(theta/250.0)*200.0 - 200.0;
+
+	// 		if (y > butter+(x-50)*(float)log(100) ) { ////// IF
+	// 			n_index++;
+	// 			fputc(normalized_input[n_index] + (float)sin(n_index*theta)-y/5, tga); ///// GREEN
+	// 			fputc(normalized_sorted[n_index]+(float)log(normalized_sorted[n_index]*500)-x/40, tga); ///// RED
+	// 		} else {
+	// 			n_index--;
+	// 			fputc((normalized_sorted[n_index]) + ((x-y)/(float)brain), tga); ////// GREEN
+	// 			n_index--;
+	// 			fputc((normalized_input[n_index] - (float)sin(theta/10.0) - x - y/2) / 3.7 + butter/3, tga); ///// RED
+	// 		}
+ //      n_index++;
+	// 		theta+=0.001;
+ //    }
+ //  }
+ //  //// magic ends here
 }
 
 
@@ -187,7 +191,7 @@ int main (int argc, char* argv[])
   // intialize and set TARGA header values
   targa_header header;       // variable of targa_header type
 
-  int x, y;                  // coordinates for `for` loops to pass in
+  // int x, y;                  // coordinates for `for` loops to pass in
                              // correct number of pixel values
 
   header.id_length = 0;
@@ -223,24 +227,16 @@ int main (int argc, char* argv[])
   // buffer for pixel values (no zeros)
   char normalized_input[input_binary_length];
 
+	char *host_buffer;
+  host_buffer = (char*)malloc(input_binary_length * sizeof(char));
+
   // buffer for sorted pixel values (still no zeros)
   char normalized_sorted[input_binary_length];
 
   // buffer for entire input file
   char *read_through = (char*) malloc ( sizeof(char) * source_size );
 
-	// CUDA buffers for the above
-	int N = source_size;
-	int *gpu_input_binary_length;
-	char *gpu_normalized_input;
-	char *gpu_normalized_input;
-	char *gpu_read_through;
 
-	cudaMalloc(&gpu_input_binary_length, N * sizeof(int));
-	cudaMalloc(&gpu_normalized_input, N * sizeof(char));
-	cudaMalloc(&gpu_normalized_sorted, N * sizeof(char));
-	cudaMalloc(&gpu_read_through, N * sizeof(char));
-	
   int i = 0;
   int read_through_index = 0;
   while (i < input_binary_length)
@@ -248,7 +244,7 @@ int main (int argc, char* argv[])
     fread(read_through, 1, source_size, source);
     if (read_through_index >= source_size)
     {
-			//printf("rewinding\n");
+      //printf("rewinding\n");
       rewind(source);
       read_through_index = 0;
     }
@@ -264,30 +260,47 @@ int main (int argc, char* argv[])
 
   strncpy(normalized_sorted, normalized_input, input_binary_length);
   qsort(normalized_sorted, strlen(normalized_input), sizeof(char), compare_function);
-	
-	cudaMemcpy(gpu_input_binary_length, input_binary_length, N * sizeof(int), cudaMemcpyHostToDevice);
-	cudaMemcpy(gpu_normalized_input, normalized_input, N * sizeof(int), cudaMemcpyHostToDevice);
-	cudaMemcpy(gpu_normalized_sorted, normalized_input, N * sizeof(int), cudaMemcpyHostToDevice);
-	cudaMemcpy(gpu_read_through, read_through_index, N * sizeof(int), cudaMemcpyHostToDevice);
+
+  // CUDA buffers
+  int N = input_binary_length;
+  char *gpu_output;
+  char *gpu_normalized_input;
+  char *gpu_normalized_sorted;
+
+  cudaMalloc(&gpu_output, N * sizeof(char));
+  cudaMalloc(&gpu_normalized_input, N * sizeof(char));
+  //cudaMalloc(&gpu_normalized_sorted, N * sizeof(char));
+  cudaMalloc(&gpu_normalized_sorted,  N * sizeof(char));
+  printf("^^^^ lu sizeof(normalized_input): %lu \n", sizeof(normalized_input));
+
+  printf("N * sizeof(char) : %lu\n", N * sizeof(char) );
+  //printf("input_binary_length / N : %d / %d\n", input_binary_length, N);
+
+
+  cudaMemcpy(gpu_output, host_buffer, N * sizeof(char), cudaMemcpyHostToDevice);
+  cudaMemcpy(gpu_normalized_input, &normalized_input, N * sizeof(char), cudaMemcpyHostToDevice);
+  cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
+
+  printf("^^^^ CUDA input buffer set, length: %lu \n", sizeof(gpu_normalized_input));
+  printf("^^^^ CUDA sorted buffer set, length: %lu \n", sizeof(gpu_normalized_sorted));
+  printf("^^^^ CUDA output buffer set, length: %lu \n", sizeof(gpu_output));
 
 	// Magic here / kernel / just a shader
 
 	// kernal_name <<< `execution configuration` >>> (args)
-	// kernal_name <<< grid dimensions (optional), block dimensions, # of threads >>> (args)
-	thisIsBasicallyAShaderInMyBook <<< A, B >>>( );
+	// <<< grid dimensions (optional), block dimensions / # of thread blocks in grid, # of threads in thread block >>>
+	thisIsBasicallyAShaderInMyBook <<< (N+255)/256, 256 >>>(N, gpu_normalized_input, gpu_normalized_sorted, gpu_output);
 
-	cudaMemcpy(input_binary_length, gpu_input_binary_length, N * sizeof(int), cudaMemcpyDeviceToHost);
-  
-	cudafree(gpu_input_binary_length);
-	cudafree(gpu_normalized_input);
-	cudafree(gpu_normalized_sorted);
-	cudafree(gpu_read_through);
+	cudaMemcpy(host_buffer, gpu_output, N * sizeof(char), cudaMemcpyDeviceToHost);
 
-	free(input_binary_length);
-	free(normalized_input);
-	free(normalized_sorted);
-	free(read_through);
-	
+  //fputs(host_buffer, tga);
+
+  cudaFree(gpu_output);
+  cudaFree(gpu_normalized_input);
+  cudaFree(gpu_normalized_sorted);
+
+  free(host_buffer);
+
 	fclose(tga);
   fclose(source);
   printf("^^^^ finished! marvel at your targa!\n");
