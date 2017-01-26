@@ -112,10 +112,12 @@ void thisIsBasicallyAShaderInMyBook(int n, char *gpu_normalized_input, char *gpu
   int i = blockIdx.x * blockDim.x + threadIdx.x;
   // if (i < n) y[i] = a*x[i] + y[i];
   if (i < n) {
-    //gpu_output[i] = 0x21;
-	
-		gpu_output[i] = gpu_normalized_input[i] + 0x11;
-		//printf("gpu-output: %c\n",gpu_output[i]);
+    if (i % 2 == 0) {
+      gpu_output[i] = 0x21;
+    } else {
+		  gpu_output[i] = gpu_normalized_input[i];
+    }
+    //printf("gpu-output: %c\n",gpu_output[i]);
   }
 
 	// //printf("^^^^ writing pixels \n");
@@ -227,10 +229,11 @@ int main (int argc, char* argv[])
   int input_binary_length = WIDTH * HEIGHT * RGBA; // normal people call this a buffer
 
   // buffer for pixel values (no zeros)
-//  char normalized_input[input_binary_length];
+  char fart[input_binary_length];
+  char normalized_input[input_binary_length];
 
-	char *normalized_input;
-	normalized_input = (char*)malloc(input_binary_length * sizeof(char));
+	//char *normalized_input;
+	//normalized_input = (char*)malloc(input_binary_length * sizeof(char));
 
 	char *host_buffer;
   host_buffer = (char*)malloc(input_binary_length * sizeof(char));
@@ -269,45 +272,55 @@ int main (int argc, char* argv[])
 
   int i = 0;
   int read_through_index = 0;
+  fread(read_through, 1, source_size, source);
+  printf("read_through : %s\n", read_through);
+  printf("read_through : %lu\n", sizeof(read_through));
+  printf("read_through : %lu\n", strlen(read_through));
+  printf("read_through[0] : %c\n", read_through[0]);
+  printf("read_through[421] : %c\n", read_through[421]);
+  // strncpy(normalized_input, read_through, input_binary_length);
   while (i < input_binary_length)
   {
-    fread(read_through, 1, source_size, source);
-    if (read_through_index >= source_size)
-    {
-      //printf("rewinding\n");
-      rewind(source);
-      read_through_index = 0;
-    }
-    if (read_through[read_through_index] != '0')
-    {
-      normalized_input[i] = read_through[read_through_index];
+    normalized_input[i] = read_through[read_through_index];
+
+    // fread(read_through, 1, source_size, source);
+    // if (read_through_index >= source_size)
+    // {
+    //   //printf("rewinding\n");
+    //   rewind(source);
+    //   read_through_index = 0;
+    // }
+    // if (read_through[read_through_index] != '0')
+    // {
+    //   normalized_input[i] = read_through[read_through_index];
       i++;
-    }
+    // }
     read_through_index++;
   }
-  free(read_through);
   printf("^^^^ normalized buffer set, length: %d \n", (int) sizeof(normalized_input));
 
-  strncpy(normalized_sorted, normalized_input, input_binary_length);
-  qsort(normalized_sorted, strlen(normalized_input), sizeof(char), compare_function);
+  // strncpy(normalized_sorted, normalized_input, input_binary_length);
+  // qsort(normalized_sorted, strlen(normalized_input), sizeof(char), compare_function);
 
- 
-	for (int i = 0; i < input_binary_length; ++i) {
-		//printf("bah %d\n", i);
-		//normalized_sorted[i] = i;
-		//gpu_normalized_sorted[i];
-		
-	}
+
+  for (int i = 0; i < input_binary_length; ++i) {
+    printf("bah %d\n", i);
+    // normalized_input[i] = i;
+    fart[i] = i;
+    printf("bah %d\n", fart[i]);
+
+  }
 
 
   cudaMemcpy(gpu_output, host_buffer, N * sizeof(char), cudaMemcpyHostToDevice);
-  cudaMemcpy(gpu_normalized_input, normalized_input, N * sizeof(char), cudaMemcpyHostToDevice);
-  cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, sizeof(normalized_sorted), cudaMemcpyHostToDevice);
+  cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
+  cudaMemcpy(gpu_normalized_input, &normalized_input, N * sizeof(char), cudaMemcpyHostToDevice);
   //cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
 
   //printf("^^^^ CUDA input buffer set, length: %lu \n", sizeof(gpu_normalized_input));
   //printf("^^^^ CUDA sorted buffer set, length: %lu \n", sizeof(gpu_normalized_sorted));
   //printf("^^^^ CUDA output buffer set, length: %lu \n", sizeof(gpu_output));
+  free(read_through);
 
 
 
@@ -324,10 +337,33 @@ int main (int argc, char* argv[])
 	cudaMemcpy(host_buffer, gpu_output, N * sizeof(char), cudaMemcpyDeviceToHost);
 
 	printf("size of host buffer : %lu\n", sizeof(host_buffer));
-  
 
 
-	fputs(host_buffer, tga);
+
+
+
+
+  fputs(host_buffer, tga); //////////////////////////
+
+
+   // int n_index = 0;
+   // for (int y = 0; y < HEIGHT; ++y)
+   // {
+   //   for (int x = 0; x < WIDTH; ++x)
+   //  {
+			// fputc(normalized_input[n_index],tga);
+			// fputc(normalized_input[n_index],tga);
+			// fputc(normalized_input[n_index],tga);
+   //     n_index++;
+   //   }
+   // }
+ //  //// magic ends here  //////////////////////////
+
+
+
+
+
+
 	//for (int i = 0; i < 1000; ++i){
 		//fputc(33, tga);
 		//printf("host_buffer: %c", host_buffer[i]);
@@ -336,14 +372,14 @@ int main (int argc, char* argv[])
 
 
 
-	
+
 
   cudaFree(gpu_output);
   cudaFree(gpu_normalized_input);
   cudaFree(gpu_normalized_sorted);
 
   free(host_buffer);
-	free(normalized_input);
+	//free(normalized_input);
 
 	fclose(tga);
   fclose(source);
