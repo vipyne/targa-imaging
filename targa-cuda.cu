@@ -113,7 +113,9 @@ void thisIsBasicallyAShaderInMyBook(int n, char *gpu_normalized_input, char *gpu
   // if (i < n) y[i] = a*x[i] + y[i];
   if (i < n) {
     //gpu_output[i] = 0x21;
-    gpu_output[i] = gpu_normalized_sorted[i];
+	
+		gpu_output[i] = gpu_normalized_input[i] + 0x11;
+		//printf("gpu-output: %c\n",gpu_output[i]);
   }
 
 	// //printf("^^^^ writing pixels \n");
@@ -225,7 +227,10 @@ int main (int argc, char* argv[])
   int input_binary_length = WIDTH * HEIGHT * RGBA; // normal people call this a buffer
 
   // buffer for pixel values (no zeros)
-  char normalized_input[input_binary_length];
+//  char normalized_input[input_binary_length];
+
+	char *normalized_input;
+	normalized_input = (char*)malloc(input_binary_length * sizeof(char));
 
 	char *host_buffer;
   host_buffer = (char*)malloc(input_binary_length * sizeof(char));
@@ -235,6 +240,31 @@ int main (int argc, char* argv[])
 
   // buffer for entire input file
   char *read_through = (char*) malloc ( sizeof(char) * source_size );
+
+
+ // CUDA buffers
+  int N = input_binary_length;
+  char *gpu_output;
+  char *gpu_normalized_input;
+  char *gpu_normalized_sorted;
+
+  cudaMalloc(&gpu_output, N * sizeof(char));
+  cudaMalloc(&gpu_normalized_input, N * sizeof(char));
+  //cudaMalloc(&gpu_normalized_sorted, N * sizeof(char));
+  cudaMalloc(&gpu_normalized_sorted,  N * sizeof(char));
+  printf("^^^^ !! d      N                       : %d \n", N);
+  printf("^^^^ !! d                  sizeof(char): %d \n", (int)sizeof(char));
+  printf("^^^^ !! lu                 sizeof(char): %lu \n", sizeof(char));
+  printf("^^^^ !! lu     sizeof(normalized_input): %lu \n", sizeof(normalized_input));
+  printf("^^^^ !! lu sizeof(gpu_normalized_input): %lu \n", sizeof(*gpu_normalized_input));
+
+  printf("N * sizeof(char) : %lu\n", N * sizeof(char) );
+  //printf("input_binary_length / N : %d / %d\n", input_binary_length, N);
+
+
+
+
+
 
 
   int i = 0;
@@ -261,45 +291,59 @@ int main (int argc, char* argv[])
   strncpy(normalized_sorted, normalized_input, input_binary_length);
   qsort(normalized_sorted, strlen(normalized_input), sizeof(char), compare_function);
 
-  // CUDA buffers
-  int N = input_binary_length;
-  char *gpu_output;
-  char *gpu_normalized_input;
-  char *gpu_normalized_sorted;
-
-  cudaMalloc(&gpu_output, N * sizeof(char));
-  cudaMalloc(&gpu_normalized_input, N * sizeof(char));
-  //cudaMalloc(&gpu_normalized_sorted, N * sizeof(char));
-  cudaMalloc(&gpu_normalized_sorted,  N * sizeof(char));
-  printf("^^^^ lu sizeof(normalized_input): %lu \n", sizeof(normalized_input));
-
-  printf("N * sizeof(char) : %lu\n", N * sizeof(char) );
-  //printf("input_binary_length / N : %d / %d\n", input_binary_length, N);
+ 
+	for (int i = 0; i < input_binary_length; ++i) {
+		//printf("bah %d\n", i);
+		//normalized_sorted[i] = i;
+		//gpu_normalized_sorted[i];
+		
+	}
 
 
   cudaMemcpy(gpu_output, host_buffer, N * sizeof(char), cudaMemcpyHostToDevice);
-  cudaMemcpy(gpu_normalized_input, &normalized_input, N * sizeof(char), cudaMemcpyHostToDevice);
-  cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
+  cudaMemcpy(gpu_normalized_input, normalized_input, N * sizeof(char), cudaMemcpyHostToDevice);
+  cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, sizeof(normalized_sorted), cudaMemcpyHostToDevice);
+  //cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
 
-  printf("^^^^ CUDA input buffer set, length: %lu \n", sizeof(gpu_normalized_input));
-  printf("^^^^ CUDA sorted buffer set, length: %lu \n", sizeof(gpu_normalized_sorted));
-  printf("^^^^ CUDA output buffer set, length: %lu \n", sizeof(gpu_output));
+  //printf("^^^^ CUDA input buffer set, length: %lu \n", sizeof(gpu_normalized_input));
+  //printf("^^^^ CUDA sorted buffer set, length: %lu \n", sizeof(gpu_normalized_sorted));
+  //printf("^^^^ CUDA output buffer set, length: %lu \n", sizeof(gpu_output));
 
-	// Magic here / kernel / just a shader
 
+
+
+	// Magic here / kernel / just a shader ////////////////////////
 	// kernal_name <<< `execution configuration` >>> (args)
 	// <<< grid dimensions (optional), block dimensions / # of thread blocks in grid, # of threads in thread block >>>
 	thisIsBasicallyAShaderInMyBook <<< (N+255)/256, 256 >>>(N, gpu_normalized_input, gpu_normalized_sorted, gpu_output);
+	////////////// <<< >>> //////////////////
+
+
+
 
 	cudaMemcpy(host_buffer, gpu_output, N * sizeof(char), cudaMemcpyDeviceToHost);
 
-  //fputs(host_buffer, tga);
+	printf("size of host buffer : %lu\n", sizeof(host_buffer));
+  
+
+
+	fputs(host_buffer, tga);
+	//for (int i = 0; i < 1000; ++i){
+		//fputc(33, tga);
+		//printf("host_buffer: %c", host_buffer[i]);
+	//}
+	printf("\n");
+
+
+
+	
 
   cudaFree(gpu_output);
   cudaFree(gpu_normalized_input);
   cudaFree(gpu_normalized_sorted);
 
   free(host_buffer);
+	free(normalized_input);
 
 	fclose(tga);
   fclose(source);
