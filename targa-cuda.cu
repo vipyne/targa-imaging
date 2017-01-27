@@ -112,11 +112,11 @@ void thisIsBasicallyAShaderInMyBook(int n, char *gpu_normalized_input, char *gpu
   int i = blockIdx.x * blockDim.x + threadIdx.x;
   // if (i < n) y[i] = a*x[i] + y[i];
   if (i < n) {
-    if (i % 2 == 0) {
-      gpu_output[i] = 0x21;
-    } else {
+    // if (i % 2 == 0) {
+    //   gpu_output[i] = 0x21;
+    // } else {
 		  gpu_output[i] = gpu_normalized_input[i];
-    }
+    // }
     //printf("gpu-output: %c\n",gpu_output[i]);
   }
 
@@ -229,7 +229,6 @@ int main (int argc, char* argv[])
   int input_binary_length = WIDTH * HEIGHT * RGBA; // normal people call this a buffer
 
   // buffer for pixel values (no zeros)
-  char fart[input_binary_length];
   char normalized_input[input_binary_length];
 
 	//char *normalized_input;
@@ -272,49 +271,92 @@ int main (int argc, char* argv[])
 
   int i = 0;
   int read_through_index = 0;
-  fread(read_through, 1, source_size, source);
-  printf("read_through : %s\n", read_through);
-  printf("read_through : %lu\n", sizeof(read_through));
-  printf("read_through : %lu\n", strlen(read_through));
-  printf("read_through[0] : %c\n", read_through[0]);
-  printf("read_through[421] : %c\n", read_through[421]);
-  // strncpy(normalized_input, read_through, input_binary_length);
-  while (i < input_binary_length)
-  {
-    normalized_input[i] = read_through[read_through_index];
 
-    // fread(read_through, 1, source_size, source);
-    // if (read_through_index >= source_size)
-    // {
-    //   //printf("rewinding\n");
-    //   rewind(source);
-    //   read_through_index = 0;
-    // }
-    // if (read_through[read_through_index] != '0')
-    // {
-    //   normalized_input[i] = read_through[read_through_index];
-      i++;
-    // }
-    read_through_index++;
-  }
+
+// fread(buffer, strlen(c)+1, 1, fp);
+
+
+  fseek(source, SEEK_SET, 0);
+  // fread(read_through, 1, source_size, source);
+  fread(normalized_input, sizeof(char), N, source); /////////////////////////////////
+  // fread(&normalized_input, strlen(normalized_input), 1, source);
+
+
+  printf("read_through : %s\n", normalized_input);
+  printf("normalized_input : %lu\n", sizeof(normalized_input));
+  printf("normalized_input : %lu\n", strlen(normalized_input));
+  printf("normalized_input[0] : %c\n", normalized_input[0]);
+  printf("normalized_input[421] : %c\n", normalized_input[421]);
+  // strncpy(normalized_input, read_through, sizeof(normalized_input));
+  // strncpy(normalized_input, read_through, input_binary_length);
+  // while (i < input_binary_length)
+  // {
+  //   normalized_input[i] = read_through[read_through_index];
+
+  //   // fread(read_through, 1, source_size, source);
+  //   // if (read_through_index >= source_size)
+  //   // {
+  //   //   //printf("rewinding\n");
+  //   //   rewind(source);
+  //   //   read_through_index = 0;
+  //   // }
+  //   // if (read_through[read_through_index] != '0')
+  //   // {
+  //   //   normalized_input[i] = read_through[read_through_index];
+  //     i++;
+  //   // }
+  //   read_through_index++;
+  // }
+  printf("^^^^ normalized buffer set, length: %d \n", (int) sizeof(normalized_input));
+  printf("^^^^ read_through buffer set, length: %d \n", (int) sizeof(read_through));
   printf("^^^^ normalized buffer set, length: %d \n", (int) sizeof(normalized_input));
 
   // strncpy(normalized_sorted, normalized_input, input_binary_length);
   // qsort(normalized_sorted, strlen(normalized_input), sizeof(char), compare_function);
 
 
-  for (int i = 0; i < input_binary_length; ++i) {
-    printf("bah %d\n", i);
-    // normalized_input[i] = i;
-    fart[i] = i;
-    printf("bah %d\n", fart[i]);
 
+
+
+//////////////////
+//////////////////
+//////////////////
+
+  int wut = 1;
+  for (int index_test = 0; index_test < input_binary_length; index_test+=3) {
+    normalized_sorted[index_test] = normalized_input[299];
+    // printf("index_test %d\n", index_test);
+    // normalized_sorted[index_test+1] = normalized_input[4];
+    normalized_sorted[index_test+1] = abs.(normalized_input[wut]);
+    normalized_sorted[index_test+2] = normalized_input[73];
+    wut++;
+    printf("wut: %d\n", wut);
+    // printf("normalized_input[4]: %d\n", normalized_input[4]);
+    printf("normalized_sorted[index_test]: %d\n", normalized_sorted[index_test]);
+    // printf("normalized_input[73]: %d\n", normalized_input[73]);
+    printf("normalized_input[wut]: %d\n", normalized_input[wut]);
   }
+
+//////////////////
+//////////////////
+//////////////////
+
+
+
+
+
+
+
+
+  // for (int i = 0; i < input_binary_length-1; i++) {
+  //   normalized_sorted[i] = normalized_input[i];
+  // }
 
 
   cudaMemcpy(gpu_output, host_buffer, N * sizeof(char), cudaMemcpyHostToDevice);
+  cudaMemcpy(gpu_normalized_input, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
+  // cudaMemcpy(gpu_normalized_input, &normalized_input, N * sizeof(char), cudaMemcpyHostToDevice);
   cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
-  cudaMemcpy(gpu_normalized_input, &normalized_input, N * sizeof(char), cudaMemcpyHostToDevice);
   //cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
 
   //printf("^^^^ CUDA input buffer set, length: %lu \n", sizeof(gpu_normalized_input));
