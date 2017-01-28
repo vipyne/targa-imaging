@@ -248,7 +248,7 @@ int main (int argc, char* argv[])
         fputc(normalized_sorted[input_binary_length - n_index] - (float)x/((float)y/24) + (float)sin(theta/100.0)*25+x/2.0 + (float)log(y/13)*12 + y, tga);
       } else {
         n_index--;
-        fputc(normalized_sorted[input_binary_length - n_index] - (float)y/((float)x/24) + (float)sin(theta/100.0)*25+x/2.0 + (float)log(y/13)*12 + y, tga);
+        fputc(normalized_sorted[input_binary_length - n_index] - (float)y/((float)x/14) + (float)sin(theta/100.0)*25+x/2.0 + (float)log(y/13)*12 + y, tga);
 	      // fputc(normalized_sorted[n_index] + y-x, tga);
 			}
 
