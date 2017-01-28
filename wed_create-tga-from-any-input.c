@@ -224,9 +224,20 @@ int main (int argc, char* argv[])
     for (int x = 0; x < WIDTH; ++x)
     {
       // pixels read in B G R order
+      if (x + normalized_input[n_index] > y + normalized_input[n_index - 1]) {
+      // if (y > line+ normalized_input[n_index - 1] || y < x) {
+      // if (y + normalized_input[n_index] > line + normalized_input[n_index - 1]) {
+
+      //fputc(normalized_sorted[input_binary_length - n_index] + (float)sin(theta/10.0)*x, tga);
+        fputc(normalized_sorted[input_binary_length - n_index] - (float)x/((float)y/24) + (float)sin(theta/100.0)*125+x/2.0 + (float)log(y/13)*12 + y, tga);
+      } else {
+        n_index--;
+        fputc(normalized_sorted[input_binary_length - n_index] - (float)y/((float)x/24) + (float)sin(theta/100.0)*525+x/2.0 + (float)log(y/13)*12 + y, tga);
+        // fputc(normalized_sorted[n_index] + y-x, tga);
+      }
       int derp = n_index;
 			n_index+=HEIGHT/50;
-      fputc(normalized_input[n_index] + 160.4*(float)y/(float)x + (float)cos(theta/20.0), tga);
+      fputc(normalized_input[n_index] + 60.4*(float)y/(float)x + (float)cos(theta/20.0), tga);
       n_index = derp;
 
 
@@ -240,17 +251,6 @@ int main (int argc, char* argv[])
       n_index++;
 
 
-      if (x + normalized_input[n_index] > y + normalized_input[n_index - 1]) {
-      // if (y > line+ normalized_input[n_index - 1] || y < x) {
-			// if (y + normalized_input[n_index] > line + normalized_input[n_index - 1]) {
-
-      //fputc(normalized_sorted[input_binary_length - n_index] + (float)sin(theta/10.0)*x, tga);
-        fputc(normalized_sorted[input_binary_length - n_index] - (float)x/((float)y/24) + (float)sin(theta/100.0)*25+x/2.0 + (float)log(y/13)*12 + y, tga);
-      } else {
-        n_index--;
-        fputc(normalized_sorted[input_binary_length - n_index] - (float)y/((float)x/14) + (float)sin(theta/100.0)*25+x/2.0 + (float)log(y/13)*12 + y, tga);
-	      // fputc(normalized_sorted[n_index] + y-x, tga);
-			}
 
       n_index++;
 			theta+=0.001;
