@@ -327,7 +327,7 @@ int main (int argc, char* argv[])
     normalized_sorted[index_test] = normalized_input[299];
     // printf("index_test %d\n", index_test);
     // normalized_sorted[index_test+1] = normalized_input[4];
-    normalized_sorted[index_test+1] = abs.(normalized_input[wut]);
+    normalized_sorted[index_test+1] = abs(normalized_input[wut]);
     normalized_sorted[index_test+2] = normalized_input[73];
     wut++;
     printf("wut: %d\n", wut);
