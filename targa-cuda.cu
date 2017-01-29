@@ -229,10 +229,10 @@ int main (int argc, char* argv[])
   int input_binary_length = WIDTH * HEIGHT * RGBA; // normal people call this a buffer
 
   // buffer for pixel values (no zeros)
-  char normalized_input[input_binary_length];
+  // char normalized_input[input_binary_length];
 
-	//char *normalized_input;
-	//normalized_input = (char*)malloc(input_binary_length * sizeof(char));
+	char *normalized_input;
+	normalized_input = (char*)malloc(input_binary_length * sizeof(char));
 
 	char *host_buffer;
   host_buffer = (char*)malloc(input_binary_length * sizeof(char));
@@ -278,7 +278,14 @@ int main (int argc, char* argv[])
 
   fseek(source, SEEK_SET, 0);
   // fread(read_through, 1, source_size, source);
-  fread(normalized_input, sizeof(char), N, source); /////////////////////////////////
+
+
+
+  // fscanf(normalized_input, sizeof(char), N, source); /////////////////////////////////
+  fread(normalized_input, 1, N, source); /////////////////////////////////
+  // fread(&normalized_input, sizeof(char), N, source); /////////////////////////////////
+
+
   // fread(&normalized_input, strlen(normalized_input), 1, source);
 
 
@@ -322,19 +329,35 @@ int main (int argc, char* argv[])
 //////////////////
 //////////////////
 
+  int wuut[input_binary_length];
+  // create an array of indexes
+  for (int v = 0; v <= input_binary_length; v++) {
+    wuut[v] = v;
+  }
+
+
   int wut = 1;
   for (int index_test = 0; index_test < input_binary_length; index_test+=3) {
-    normalized_sorted[index_test] = normalized_input[299];
+    normalized_sorted[index_test] = 0x45;
     // printf("index_test %d\n", index_test);
     // normalized_sorted[index_test+1] = normalized_input[4];
-    normalized_sorted[index_test+1] = abs(normalized_input[wut]);
+    // if ( abs(normalized_input[wut]) ) {
+    // printf("wut: %d\n", wuut[index_test]);
+    //   normalized_sorted[index_test+1] = abs(normalized_input[wut]);
+    // } else {
+    // printf("nope\n" );
+      normalized_sorted[index_test+1] = normalized_input[100];
+      // normalized_sorted[index_test+1] = 0x18;
+      // normalized_sorted[index_test+1] = 'v';
+    // }
+
+    // normalized_sorted[index_test+1] = abs(normalized_input[4+wuut[index_test]]);
     normalized_sorted[index_test+2] = normalized_input[73];
     wut++;
-    printf("wut: %d\n", wut);
     // printf("normalized_input[4]: %d\n", normalized_input[4]);
-    printf("normalized_sorted[index_test]: %d\n", normalized_sorted[index_test]);
+    // printf("normalized_sorted[index_test]: %d\n", normalized_sorted[index_test]);
     // printf("normalized_input[73]: %d\n", normalized_input[73]);
-    printf("normalized_input[wut]: %d\n", normalized_input[wut]);
+    // printf("normalized_input[wut]: %d\n", normalized_input[wuut[index_test]]);
   }
 
 //////////////////
@@ -342,7 +365,8 @@ int main (int argc, char* argv[])
 //////////////////
 
 
-
+  // strcpy(normalized_sorted, normalized_input);
+  //   printf("normalized_input[0]: %d\n", normalized_input[0]);
 
 
 
@@ -354,7 +378,7 @@ int main (int argc, char* argv[])
 
 
   cudaMemcpy(gpu_output, host_buffer, N * sizeof(char), cudaMemcpyHostToDevice);
-  cudaMemcpy(gpu_normalized_input, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
+  cudaMemcpy(gpu_normalized_input, &normalized_input, N * sizeof(char), cudaMemcpyHostToDevice);
   // cudaMemcpy(gpu_normalized_input, &normalized_input, N * sizeof(char), cudaMemcpyHostToDevice);
   cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
   //cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
