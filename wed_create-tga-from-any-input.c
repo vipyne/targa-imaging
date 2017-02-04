@@ -251,11 +251,11 @@ int main (int argc, char* argv[])
 
       // RED //
 
-      if (x + normalized_input[n_index] > y + normalized_input[n_index - 1] + 250) {
+      if (x + normalized_input[n_index] > y + normalized_input[n_index - 1] + 250 || (x < 133 && y % 3 == 0)) {
         n_index--;
         fputc((float)x/((float)y/100) + (float)cos(theta/100.0)*100+x/2.0 + (float)log(y/13)*12  + dada + 15 + normalized_sorted[input_binary_length + n_index], tga);
       } else {
-        if ((int)log(x/10.0) % 2 != 0 || x > y || x > 400) {
+        if ( ( (int)log(x/10.0) % 2 != 0 && x > y - 200)  ||  ((int)log(x/10.0) % 2 == 0 && x < 350 && x > y)) {
           fputc( (float)y/((float)x/100) + (float)cos(log(theta)/100.0)*500+x/2.1 + (float)log(y/53)*12 + log(y/10.0) + dada + normalized_sorted[input_binary_length - n_index], tga);
         } else {
           fputc( (float)y/((float)x/100) + (float)cos(log(theta)/100.0)*500+x/2.1 + (float)log(y/53)*12 + log(y/10.0) + dada + normalized_sorted[input_binary_length + n_index], tga);
