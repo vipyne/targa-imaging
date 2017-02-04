@@ -242,10 +242,10 @@ int main (int argc, char* argv[])
         if (x + normalized_input[n_index] > y + normalized_input[n_index - 1]) {
             fputc(normalized_input[n_index] + (float)cos(theta/14.0) - y, tga);
           } else {
-            int derp = n_index;
-            n_index+=HEIGHT/50;
+            // int derp = n_index;
+            // n_index+=HEIGHT/50;
             fputc(normalized_input[n_index] + 20*(float)y/(float)x + (float)cos(theta/20.0), tga);
-            n_index = derp;
+            // n_index = derp;
           }
         }
 
