@@ -223,18 +223,20 @@ int main (int argc, char* argv[])
 
     for (int x = 0; x < WIDTH; ++x)
     {
-      float dada = sin(theta) * 100.0;
+      float dada = log(theta) * 70.0;
+
+
 
       // BLUE //
 
       if (x % 2 ==0) {
 
-        if (y > line+ normalized_input[n_index - 1] || y < x) {
+        if (y > line+ normalized_input[n_index - 1] || (float)log(y/100.0) < x) {
 
           fputc(normalized_sorted[input_binary_length - n_index] + (float)log(y/13)*12 + y + dada, tga);
         } else {
           n_index--;
-          fputc(normalized_sorted[input_binary_length - n_index] + (float)log(y/13)*12 + y + dada+25, tga);
+          fputc(normalized_sorted[input_binary_length - n_index] + (float)log(y/13)*12 + y/2.1 + dada+14, tga);
         }
       }else{
         if (x + normalized_input[n_index] > y + normalized_input[n_index - 1]) {
@@ -247,23 +249,23 @@ int main (int argc, char* argv[])
           }
         }
 
-      // GREEN //
-
-      if (x + normalized_input[n_index] > y + normalized_input[n_index - 1]) {
-      // if (x > (float)sin(y)) {
-        fputc(normalized_input[n_index-HEIGHT-1] + (float)exp(theta/14.0) - y/4.0, tga);
-      } else {
-        fputc(normalized_input[n_index-HEIGHT-1] + (float)log(theta/10.0)*y/55.0, tga);
-      }
-
       // RED //
 
       if (x + normalized_input[n_index] > y + normalized_input[n_index - 1] + 250) {
         n_index--;
-        fputc(normalized_sorted[input_binary_length + n_index] - (float)x/((float)y/100) + (float)cos(theta/100.0)*125+x/2.0 + (float)log(y/13)*12 + y + dada + 25, tga);
+        fputc((float)x/((float)y/100) + (float)cos(theta/100.0)*100+x/2.0 + (float)log(y/13)*12  + dada + 15 + normalized_sorted[input_binary_length + n_index], tga);
+      } else {
+        fputc( (float)y/((float)x/100) + (float)cos(log(theta)/100.0)*500+x/2.1 + (float)log(y/53)*12 + log(y/10.0) + dada + normalized_sorted[input_binary_length - n_index], tga);
+      }
+
+      // GREEN //
+
+      if (x + normalized_input[n_index] > (float)log(y/100.0) + normalized_input[n_index - 1]) {
+      // if (x > (float)sin(y)) {
+        fputc(normalized_input[n_index-HEIGHT-1] + (float)exp(theta/14.0) - y/4.0, tga);
       } else {
         n_index--;
-        fputc(normalized_sorted[input_binary_length - n_index] - (float)y/((float)x/100) + (float)cos(theta/100.0)*525+x/2.0 + (float)log(y/13)*12 + y + dada, tga);
+        fputc(normalized_input[n_index-HEIGHT-1] + (float)log(theta/10.0)*y/55.0, tga);
       }
 
       n_index++;
