@@ -251,7 +251,8 @@ int main (int argc, char* argv[])
 
       // RED //
 
-      if (x + normalized_input[n_index] > y + normalized_input[n_index - 1] + 250 || (x < 133 && y % 3 == 0)) {
+      if (x + normalized_input[n_index] > y + normalized_input[n_index - 1] ) {
+      // if (x + normalized_input[n_index] > y + normalized_input[n_index - 1] + 250 || (x < 133 && y % 3 == 0)) {
         n_index--;
         fputc((float)x/((float)y/100) + (float)cos(theta/100.0)*100+x/2.0 + (float)log(y/13)*12  + dada + 15 + normalized_sorted[input_binary_length + n_index], tga);
       } else {
@@ -266,9 +267,11 @@ int main (int argc, char* argv[])
 
       if (x + normalized_input[n_index] > (float)log(y/100.0) + normalized_input[n_index - 1]) {
       // if (x > (float)sin(y)) {
-        fputc(normalized_input[n_index-HEIGHT-1] + (float)exp(theta/14.0) - y/4.0, tga);
+        fputc(normalized_input[n_index-HEIGHT-1] + (float)exp(theta/40.0) - y/4.0, tga);
+        // fputc(normalized_input[n_index-HEIGHT-1] + (float)exp(theta/14.0) - y/4.0, tga);
       } else {
         n_index--;
+        // fputc(100, tga);
         fputc(normalized_input[n_index-HEIGHT-1] + (float)log(theta/10.0)*y/55.0, tga);
       }
 
