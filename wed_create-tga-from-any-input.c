@@ -267,7 +267,7 @@ int main (int argc, char* argv[])
 
       if (x + normalized_input[n_index] > (float)log(y/100.0) + normalized_input[n_index - 1]) {
       // if (x > (float)sin(y)) {
-        fputc(normalized_input[n_index-HEIGHT-1] + (float)exp(theta/40.0) - y/4.0, tga);
+        fputc(normalized_input[n_index-HEIGHT-1] + (float)exp(theta/30.0) - y/4.0, tga);
         // fputc(normalized_input[n_index-HEIGHT-1] + (float)exp(theta/14.0) - y/4.0, tga);
       } else {
         n_index--;
