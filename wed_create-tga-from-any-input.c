@@ -225,7 +225,7 @@ int main (int argc, char* argv[])
     {
       float dada = log(theta) * 70.0;
 
-      // RED //
+      // BLUE //
 
       if (y > line+ normalized_input[n_index - 1] || (float)log(y/100.0) < x) {
         n_index--;
@@ -242,21 +242,17 @@ int main (int argc, char* argv[])
       // GREEN //
 
       if ( ( (int)log(x/10.0) % 2 != 0 && x > y - 200)  ||  ((int)log(x/10.0) % 2 == 0 && x < 350 && x > y)) {
-        if (y < 141 && x % 2 == 0) {
-          fputc(normalized_input[n_index] + (float)log(theta/40.0) - y/4.0, tga);
-        } else {
           fputc(normalized_input[n_index-HEIGHT-1] + (float)exp(theta/38.0) - y/4.0, tga);
-        }
       } else {
         n_index--;
         fputc(normalized_input[n_index-HEIGHT-1] + (float)log(theta/14.0)*y/55.0, tga);
       }
 
-      // BLUE //
+      // RED //
 
-      if (x % 2 ==0) {
-        if (x + normalized_input[n_index] > y + normalized_input[n_index - 1] ) {
-          fputc(normalized_sorted[input_binary_length - n_index] + (float)log(y/13)*12 + y + dada, tga);
+      if (x % 3 != 0) {
+        if (x + normalized_input[n_index] > (float)exp(y/(x/2)) ) {
+          fputc(normalized_sorted[input_binary_length - n_index] + (float)exp(y/x) + dada, tga);
         } else {
           n_index--;
           n_index--;
