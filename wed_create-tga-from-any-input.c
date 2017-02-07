@@ -225,16 +225,40 @@ int main (int argc, char* argv[])
     {
       float dada = log(theta) * 70.0;
 
+      // RED //
 
+      if (y > line+ normalized_input[n_index - 1] || (float)log(y/100.0) < x) {
+        n_index--;
+        fputc( (float)cos(theta/100.0)*100+x/2.0 + dada + 15 + normalized_sorted[input_binary_length + n_index], tga);
+      } else {
+        if (x + normalized_input[n_index] > (float)log(y/100.0) + normalized_input[n_index - 1]) {
+          fputc(  (float)cos(log(theta)/100.0)*500+x/2.1 + (float)log(y/53)*12 + log(y/10.0) + dada + normalized_sorted[input_binary_length - n_index], tga);
+        } else {
+          n_index--;
+          fputc( (float)y/((float)x/100) + (float)cos(log(theta)/100.0)*500+x/2.1 + (float)log(y/53)*12 + log(y/10.0) + dada + normalized_sorted[input_binary_length + n_index], tga);
+        }
+      }
+
+      // GREEN //
+
+      if ( ( (int)log(x/10.0) % 2 != 0 && x > y - 200)  ||  ((int)log(x/10.0) % 2 == 0 && x < 350 && x > y)) {
+        if (y < 141 && x % 2 == 0) {
+          fputc(normalized_input[n_index] + (float)log(theta/40.0) - y/4.0, tga);
+        } else {
+          fputc(normalized_input[n_index-HEIGHT-1] + (float)exp(theta/38.0) - y/4.0, tga);
+        }
+      } else {
+        n_index--;
+        fputc(normalized_input[n_index-HEIGHT-1] + (float)log(theta/14.0)*y/55.0, tga);
+      }
 
       // BLUE //
 
       if (x % 2 ==0) {
-
-        if (y > line+ normalized_input[n_index - 1] || (float)log(y/100.0) < x) {
-
+        if (x + normalized_input[n_index] > y + normalized_input[n_index - 1] ) {
           fputc(normalized_sorted[input_binary_length - n_index] + (float)log(y/13)*12 + y + dada, tga);
         } else {
+          n_index--;
           n_index--;
           fputc(normalized_sorted[input_binary_length - n_index] + (float)log(y/13)*12 + y/2.1 + dada+14, tga);
         }
@@ -249,35 +273,7 @@ int main (int argc, char* argv[])
           }
         }
 
-      // RED //
 
-      if (x + normalized_input[n_index] > y + normalized_input[n_index - 1] ) {
-      // if (x + normalized_input[n_index] > y + normalized_input[n_index - 1] + 250 || (x < 133 && y % 3 == 0)) {
-        n_index--;
-        fputc( (float)cos(theta/100.0)*100+x/2.0 + dada + 15 + normalized_sorted[input_binary_length + n_index], tga);
-      } else {
-        if ( ( (int)log(x/10.0) % 2 != 0 && x > y - 200)  ||  ((int)log(x/10.0) % 2 == 0 && x < 350 && x > y)) {
-          fputc(  (float)cos(log(theta)/100.0)*500+x/2.1 + (float)log(y/53)*12 + log(y/10.0) + dada + normalized_sorted[input_binary_length - n_index], tga);
-        } else {
-          fputc( (float)y/((float)x/100) + (float)cos(log(theta)/100.0)*500+x/2.1 + (float)log(y/53)*12 + log(y/10.0) + dada + normalized_sorted[input_binary_length + n_index], tga);
-        }
-      }
-
-      // GREEN //
-
-      // if ( (x + normalized_input[n_index] > (float)log(y/100.0) + normalized_input[n_index - 1]) && (y > 51) ) {
-      if (x + normalized_input[n_index] > (float)log(y/100.0) + normalized_input[n_index - 1]) {
-      // if (x > (float)sin(y)) {
-        if (y < 141 && x % 2 == 0) {
-          fputc(normalized_input[n_index] + (float)log(theta/40.0) - y/4.0, tga);
-        } else {
-          fputc(normalized_input[n_index-HEIGHT-1] + (float)exp(theta/40.0) - y/4.0, tga);
-        }
-        // fputc(normalized_input[n_index-HEIGHT-1] + (float)exp(theta/14.0) - y/4.0, tga);
-      } else {
-        n_index--;
-        fputc(normalized_input[n_index-HEIGHT-1] + (float)log(theta/10.0)*y/55.0, tga);
-      }
 
       n_index++;
 			theta+=0.001;
