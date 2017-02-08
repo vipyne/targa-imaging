@@ -189,24 +189,49 @@ int main (int argc, char* argv[])
   // buffer for entire input file
   char *read_through = (char*) malloc ( sizeof(char) * source_size );
 
-  int i = 0;
-  int read_through_index = 0;
-  while (i < input_binary_length)
-  {
-    fread(read_through, 1, source_size, source);
-    if (read_through_index >= source_size)
-    {
-      rewind(source);
-      read_through_index = 0;
+
+  fseek(source, SEEK_SET, 0);
+  fread(normalized_input, sizeof(char), input_binary_length, source);
+
+  // int i = 0;
+  // int read_through_index = 0;
+  // while (i < input_binary_length)
+  // {
+  //   fread(read_through, 1, source_size, source);
+  //   if (read_through_index >= source_size)
+  //   {
+  //     rewind(source);
+  //     read_through_index = 0;
+  //   }
+  //   if (read_through[read_through_index] != '0')
+  //   {
+  //     normalized_input[i] = read_through[read_through_index];
+  //     i++;
+  //   }
+  //   read_through_index++;
+  // }
+  // free(read_through);
+
+  //////////////////
+  //////////////////
+  //////////////////
+  int wut = 1;
+  for (int index_test = 0; index_test < input_binary_length; index_test+=3) {
+    if (normalized_input[wut] != 0) {
+      normalized_sorted[index_test] = normalized_input[wut];
+      normalized_sorted[index_test+1] = normalized_input[wut];
+      normalized_sorted[index_test+2] = normalized_input[wut];
+    } else {
+      normalized_sorted[index_test] = 120;
+      normalized_sorted[index_test+1] = 4;
+      normalized_sorted[index_test+2] = 33;
     }
-    if (read_through[read_through_index] != '0')
-    {
-      normalized_input[i] = read_through[read_through_index];
-      i++;
-    }
-    read_through_index++;
+    wut++;
   }
-  free(read_through);
+  //////////////////
+  //////////////////
+  //////////////////
+
   printf("^^^^ normalized buffer set, length: %d \n", (int) sizeof(normalized_input));
 
   // strncpy(normalized_sorted, normalized_input, input_binary_length);
@@ -214,20 +239,22 @@ int main (int argc, char* argv[])
   // qsort(normalized_input, input_binary_length, sizeof(char), compare_function);
 
   printf("^^^^ writing pixels \n");
-  int n_index = 0;
-  float theta = 0;
-  //// magic happens here
-  for (int y = 0; y < HEIGHT; ++y)
-  {
-    for (int x = 0; x < WIDTH; ++x)
-    {
-      fputc( normalized_input[n_index], tga);
-      fputc( normalized_input[n_index+1], tga);
-      fputc( normalized_input[n_index+2], tga);
-      n_index+=3;
-    }
-  }
-  //// magic ends here
+  // int n_index = 0;
+  // float theta = 0;
+  // //// magic happens here
+  // for (int y = 0; y < HEIGHT; ++y)
+  // {
+  //   for (int x = 0; x < WIDTH; ++x)
+  //   {
+  //     fputc( normalized_input[n_index], tga);
+  //     fputc( normalized_input[n_index+1], tga);
+  //     fputc( normalized_input[n_index+2], tga);
+  //     n_index+=3;
+  //   }
+  // }
+  // //// magic ends here
+
+  fputs(normalized_sorted, tga); //////////////////////////
 
   fclose(tga);
   fclose(source);
