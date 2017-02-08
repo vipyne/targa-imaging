@@ -107,13 +107,14 @@ void print_directions(void)
 
 ////// CUDA KERNEL
 __global__
-void thisIsBasicallyAShaderInMyBook(int n, char *gpu_normalized_input, char *gpu_normalized_sorted, char *gpu_output, int *n_index, float *theta)
+void thisIsBasicallyAShaderInMyBook(int n, char *gpu_normalized_input, char *gpu_normalized_sorted, char *gpu_output, int n_index, float theta)
 {
   int i = blockIdx.x * blockDim.x + threadIdx.x;
   if (i < n) {
     // int n_index = 0;
     // float theta = 0;
-    gpu_output[i] = gpu_normalized_input[n_index[i]-1000-1] + (float)log(theta[i]/10.0);
+    gpu_output[i] = gpu_normalized_input[i];
+    // gpu_output[i] = gpu_normalized_input[n_index[i]-1000-1] + (float)log(theta[i]/10.0);
 
     // for (int y = 0; y < 1000; ++y)
     // {
@@ -360,78 +361,50 @@ int main (int argc, char* argv[])
 //////////////////
 //////////////////
 
-
-
-
-
-printf("fart\n");
-
-
+printf("cuda mem copy\n");
   // for (int i = 0; i < input_binary_length-1; i++) {
   //   normalized_sorted[i] = normalized_input[i];
   // }
-
-
   cudaMemcpy(gpu_output, host_buffer, N * sizeof(char), cudaMemcpyHostToDevice);
   cudaMemcpy(gpu_normalized_input, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
   // cudaMemcpy(gpu_normalized_input, &normalized_input, N * sizeof(char), cudaMemcpyHostToDevice);
   cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
   //cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
-
   //printf("^^^^ CUDA input buffer set, length: %lu \n", sizeof(gpu_normalized_input));
   //printf("^^^^ CUDA sorted buffer set, length: %lu \n", sizeof(gpu_normalized_sorted));
   //printf("^^^^ CUDA output buffer set, length: %lu \n", sizeof(gpu_output));
   free(read_through);
 
-printf("fart again\n");
-
-  int *n_index = (int*)malloc(sizeof(int) * N);
-  float *theta = (float*)malloc(sizeof(float) * N);
-
-
-  n_index[0] = 0;
-  theta[0] = 0.001;
-
-  for (int n_i = 1; n_i < N; ++n_i) {
-    n_index[n_i] = n_index[n_i - 1] + 1;
-    theta[n_i] = theta[n_i - 1] + 0.001;
-    // printf("n_index %d\n", n_index[n_i]);
-    // printf("theta %f\n", theta[n_i]);
-  }
-
-printf("aaaaaaaand again\n");
-
-  cudaMemcpy(gpu_n_index, &n_index, N * sizeof(int), cudaMemcpyHostToDevice);
-printf("aaaaaaaand again\n");
-  cudaMemcpy(gpu_theta, &theta, N * sizeof(float), cudaMemcpyHostToDevice);
-
-
-
+//   int *n_index = (int*)malloc(sizeof(int) * N);
+//   float *theta = (float*)malloc(sizeof(float) * N);
+//   //n_index[0] = 0;
+//   //theta[0] = 0.001;
+//   for (int n_i = 0; n_i < N; ++n_i) {
+//     n_index[n_i] = n_i;
+//     theta[n_i] = (n_i + 1)/1000.0;
+//   }
+// printf("1   guess here\n");
+//   // cudaMemcpy(gpu_output, host_buffer, N * sizeof(char), cudaMemcpyHostToDevice);
+//   cudaMemcpy(gpu_n_index, &n_index, N * sizeof(int), cudaMemcpyHostToDevice);
+// printf("2 guess here\n");
+//   cudaMemcpy(gpu_theta, &theta, N * sizeof(float), cudaMemcpyHostToDevice);
 
 printf("guess here\n");
 
   // Magic here / kernel / just a shader ////////////////////////
   // kernal_name <<< `execution configuration` >>> (args)
   // <<< grid dimensions (optional), block dimensions / # of thread blocks in grid, # of threads in thread block >>>
-  thisIsBasicallyAShaderInMyBook <<< (N+255)/256, 256 >>>(N, gpu_normalized_input, gpu_normalized_sorted, gpu_output, n_index, theta);
+  thisIsBasicallyAShaderInMyBook <<< (N+255)/256, 256 >>>(N, gpu_normalized_input, gpu_normalized_sorted, gpu_output, 5, 0.06);
+  // thisIsBasicallyAShaderInMyBook <<< (N+255)/256, 256 >>>(N, gpu_normalized_input, gpu_normalized_sorted, gpu_output, n_index, theta);
   ////////////// <<< >>> //////////////////
 
 printf("meh\n");
-
-
 
 	cudaMemcpy(host_buffer, gpu_output, N * sizeof(char), cudaMemcpyDeviceToHost);
 
 	printf("size of host buffer : %lu\n", sizeof(host_buffer));
 
-
-
-
-
-
   fputs(host_buffer, tga); //////////////////////////
-
-
    // int n_index = 0;
    // for (int y = 0; y < HEIGHT; ++y)
    // {
@@ -443,22 +416,8 @@ printf("meh\n");
    //     n_index++;
    //   }
    // }
- //  //// magic ends here  //////////////////////////
 
-
-
-
-
-
-	//for (int i = 0; i < 1000; ++i){
-		//fputc(33, tga);
-		//printf("host_buffer: %c", host_buffer[i]);
-	//}
 	printf("\n");
-
-
-
-
 
   cudaFree(gpu_output);
   cudaFree(gpu_normalized_input);
