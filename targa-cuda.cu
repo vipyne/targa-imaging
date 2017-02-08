@@ -107,48 +107,58 @@ void print_directions(void)
 
 ////// CUDA KERNEL
 __global__
-void thisIsBasicallyAShaderInMyBook(int n, char *gpu_normalized_input, char *gpu_normalized_sorted, char *gpu_output)
+void thisIsBasicallyAShaderInMyBook(int n, char *gpu_normalized_input, char *gpu_normalized_sorted, char *gpu_output, int *n_index, float *theta)
 {
   int i = blockIdx.x * blockDim.x + threadIdx.x;
-  // if (i < n) y[i] = a*x[i] + y[i];
   if (i < n) {
-    // if (i % 2 == 0) {
-    //   gpu_output[i] = 0x21;
-    // } else {
-		  gpu_output[i] = gpu_normalized_input[i];
+    // int n_index = 0;
+    // float theta = 0;
+    gpu_output[i] = gpu_normalized_input[n_index[i]-1000-1] + (float)log(theta[i]/10.0);
+
+    // for (int y = 0; y < 1000; ++y)
+    // {
+    //   for (int x = 0; x < 1000; ++x)
+    //   {
+    //     int line = (float)cos(theta/10.0)*1 + 10*x;
+    //     float dada = sin(theta) * 100.0;
+    //     // BLUE //
+    //     if (x % 2 ==0) {
+    //       if (y > line+ gpu_normalized_input[n_index - 1] || y < x) {
+    //         gpu_output[i] = gpu_normalized_sorted[n - n_index] + (float)log(y/13)*12 + y + dada;
+    //       } else {
+    //         n_index--;
+    //         gpu_output[i] = gpu_normalized_sorted[n - n_index] + (float)log(y/13)*12 + y + dada+25;
+    //       }
+    //     }else{
+    //       if (x + gpu_normalized_input[n_index] > y + gpu_normalized_input[n_index - 1]) {
+    //           gpu_output[i] = gpu_normalized_input[n_index] + (float)cos(theta/14.0) - y;
+    //       } else {
+    //         int derp = n_index;
+    //         n_index+=1000/50;
+    //         gpu_output[i] = gpu_normalized_input[n_index] + 20*(float)y/(float)x + (float)cos(theta/20.0);
+    //         n_index = derp;
+    //       }
+    //     }
+    //     // GREEN //
+    //     if (x + gpu_normalized_input[n_index] > y + gpu_normalized_input[n_index - 1]) {
+    //       gpu_output[i] = gpu_normalized_input[n_index-1000-1] + (float)exp(theta/14.0) - y/4.0;
+    //     } else {
+    //       gpu_output[i] = gpu_normalized_input[n_index-1000-1] + (float)log(theta/10.0)*y/55.0;
+    //     }
+    //     // RED //
+    //     if (x + gpu_normalized_input[n_index] > y + gpu_normalized_input[n_index - 1] + 250) {
+    //       n_index--;
+    //       gpu_output[i] = gpu_normalized_sorted[n + n_index] - (float)x/((float)y/100) + (float)cos(theta/100.0)*125+x/2.0 + (float)log(y/13)*12 + y + dada + 25;
+    //     } else {
+    //       n_index--;
+    //       gpu_output[i] = gpu_normalized_sorted[n - n_index] - (float)y/((float)x/100) + (float)cos(theta/100.0)*525+x/2.0 + (float)log(y/13)*12 + y + dada;
+    //     }
+        // n_index++;
+        // theta+=0.001;
+    //   }
     // }
-    //printf("gpu-output: %c\n",gpu_output[i]);
+    // gpu_output[i] = gpu_normalized_input[i];
   }
-
-	// //printf("^^^^ writing pixels \n");
- //  int n_index = 0;
-	// float theta = 0.0;
-
- //  //// magic happens here
- //  for (int y = 0; y < HEIGHT; ++y)
- //  {
- //    for (int x = 0; x < WIDTH; ++x)
- //    {
- //      // pixels read in B G R order
- //      fputc( fabsf((x%200)-(y)/(float)sin(x-y) ), tga); ////// BLUE
-
-	// 		float butter = sin(theta*10.0)* (250.0-y) - (float)sin(theta/250.0)*200.0 - 200.0;
-
-	// 		if (y > butter+(x-50)*(float)log(100) ) { ////// IF
-	// 			n_index++;
-	// 			fputc(normalized_input[n_index] + (float)sin(n_index*theta)-y/5, tga); ///// GREEN
-	// 			fputc(normalized_sorted[n_index]+(float)log(normalized_sorted[n_index]*500)-x/40, tga); ///// RED
-	// 		} else {
-	// 			n_index--;
-	// 			fputc((normalized_sorted[n_index]) + ((x-y)/(float)brain), tga); ////// GREEN
-	// 			n_index--;
-	// 			fputc((normalized_input[n_index] - (float)sin(theta/10.0) - x - y/2) / 3.7 + butter/3, tga); ///// RED
-	// 		}
- //      n_index++;
-	// 		theta+=0.001;
- //    }
- //  }
- //  //// magic ends here
 }
 
 
@@ -229,10 +239,10 @@ int main (int argc, char* argv[])
   int input_binary_length = WIDTH * HEIGHT * RGBA; // normal people call this a buffer
 
   // buffer for pixel values (no zeros)
-  // char normalized_input[input_binary_length];
+  char normalized_input[input_binary_length];
 
-	char *normalized_input;
-	normalized_input = (char*)malloc(input_binary_length * sizeof(char));
+	//char *normalized_input;
+	//normalized_input = (char*)malloc(input_binary_length * sizeof(char));
 
 	char *host_buffer;
   host_buffer = (char*)malloc(input_binary_length * sizeof(char));
@@ -249,11 +259,15 @@ int main (int argc, char* argv[])
   char *gpu_output;
   char *gpu_normalized_input;
   char *gpu_normalized_sorted;
+  int *gpu_n_index;
+  float *gpu_theta;
 
   cudaMalloc(&gpu_output, N * sizeof(char));
   cudaMalloc(&gpu_normalized_input, N * sizeof(char));
   //cudaMalloc(&gpu_normalized_sorted, N * sizeof(char));
   cudaMalloc(&gpu_normalized_sorted,  N * sizeof(char));
+  cudaMalloc(&gpu_n_index,  N * sizeof(int));
+  cudaMalloc(&gpu_theta,  N * sizeof(float));
   printf("^^^^ !! d      N                       : %d \n", N);
   printf("^^^^ !! d                  sizeof(char): %d \n", (int)sizeof(char));
   printf("^^^^ !! lu                 sizeof(char): %lu \n", sizeof(char));
@@ -278,14 +292,7 @@ int main (int argc, char* argv[])
 
   fseek(source, SEEK_SET, 0);
   // fread(read_through, 1, source_size, source);
-
-
-
-  // fscanf(normalized_input, sizeof(char), N, source); /////////////////////////////////
-  fread(normalized_input, 1, N, source); /////////////////////////////////
-  // fread(&normalized_input, sizeof(char), N, source); /////////////////////////////////
-
-
+  fread(normalized_input, sizeof(char), N, source); /////////////////////////////////
   // fread(&normalized_input, strlen(normalized_input), 1, source);
 
 
@@ -329,35 +336,24 @@ int main (int argc, char* argv[])
 //////////////////
 //////////////////
 
-  int wuut[input_binary_length];
-  // create an array of indexes
-  for (int v = 0; v <= input_binary_length; v++) {
-    wuut[v] = v;
-  }
-
-
   int wut = 1;
   for (int index_test = 0; index_test < input_binary_length; index_test+=3) {
-    normalized_sorted[index_test] = 0x45;
-    // printf("index_test %d\n", index_test);
-    // normalized_sorted[index_test+1] = normalized_input[4];
-    // if ( abs(normalized_input[wut]) ) {
-    // printf("wut: %d\n", wuut[index_test]);
-    //   normalized_sorted[index_test+1] = abs(normalized_input[wut]);
-    // } else {
-    // printf("nope\n" );
-      normalized_sorted[index_test+1] = normalized_input[100];
-      // normalized_sorted[index_test+1] = 0x18;
-      // normalized_sorted[index_test+1] = 'v';
-    // }
-
-    // normalized_sorted[index_test+1] = abs(normalized_input[4+wuut[index_test]]);
-    normalized_sorted[index_test+2] = normalized_input[73];
+    if (normalized_input[wut] != 0) {
+      normalized_sorted[index_test] = normalized_input[wut];
+      normalized_sorted[index_test+1] = normalized_input[wut];
+      // normalized_sorted[index_test+1] = abs(normalized_input[wut]);
+      normalized_sorted[index_test+2] = normalized_input[wut];
+    } else {
+      normalized_sorted[index_test] = 120;
+      normalized_sorted[index_test+1] = 4;
+      normalized_sorted[index_test+2] = 33;
+    }
     wut++;
-    // printf("normalized_input[4]: %d\n", normalized_input[4]);
-    // printf("normalized_sorted[index_test]: %d\n", normalized_sorted[index_test]);
-    // printf("normalized_input[73]: %d\n", normalized_input[73]);
-    // printf("normalized_input[wut]: %d\n", normalized_input[wuut[index_test]]);
+    // printf("wut: %d\n", wut);
+    // // printf("normalized_input[4]: %d\n", normalized_input[4]);
+    // // printf("normalized_sorted[index_test]: %d\n", normalized_sorted[index_test]);
+    // // printf("normalized_input[73]: %d\n", normalized_input[73]);
+    // printf("normalized_input[wut]: %d\n", normalized_input[wut]);
   }
 
 //////////////////
@@ -365,11 +361,10 @@ int main (int argc, char* argv[])
 //////////////////
 
 
-  // strcpy(normalized_sorted, normalized_input);
-  //   printf("normalized_input[0]: %d\n", normalized_input[0]);
 
 
 
+printf("fart\n");
 
 
   // for (int i = 0; i < input_binary_length-1; i++) {
@@ -378,7 +373,7 @@ int main (int argc, char* argv[])
 
 
   cudaMemcpy(gpu_output, host_buffer, N * sizeof(char), cudaMemcpyHostToDevice);
-  cudaMemcpy(gpu_normalized_input, &normalized_input, N * sizeof(char), cudaMemcpyHostToDevice);
+  cudaMemcpy(gpu_normalized_input, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
   // cudaMemcpy(gpu_normalized_input, &normalized_input, N * sizeof(char), cudaMemcpyHostToDevice);
   cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
   //cudaMemcpy(gpu_normalized_sorted, &normalized_sorted, N * sizeof(char), cudaMemcpyHostToDevice);
@@ -388,15 +383,40 @@ int main (int argc, char* argv[])
   //printf("^^^^ CUDA output buffer set, length: %lu \n", sizeof(gpu_output));
   free(read_through);
 
+printf("fart again\n");
+
+  int *n_index = (int*)malloc(sizeof(int) * N);
+  float *theta = (float*)malloc(sizeof(float) * N);
+
+
+  n_index[0] = 0;
+  theta[0] = 0.001;
+
+  for (int n_i = 1; n_i < N; ++n_i) {
+    n_index[n_i] = n_index[n_i - 1] + 1;
+    theta[n_i] = theta[n_i - 1] + 0.001;
+    // printf("n_index %d\n", n_index[n_i]);
+    // printf("theta %f\n", theta[n_i]);
+  }
+
+printf("aaaaaaaand again\n");
+
+  cudaMemcpy(gpu_n_index, &n_index, N * sizeof(int), cudaMemcpyHostToDevice);
+printf("aaaaaaaand again\n");
+  cudaMemcpy(gpu_theta, &theta, N * sizeof(float), cudaMemcpyHostToDevice);
 
 
 
-	// Magic here / kernel / just a shader ////////////////////////
-	// kernal_name <<< `execution configuration` >>> (args)
-	// <<< grid dimensions (optional), block dimensions / # of thread blocks in grid, # of threads in thread block >>>
-	thisIsBasicallyAShaderInMyBook <<< (N+255)/256, 256 >>>(N, gpu_normalized_input, gpu_normalized_sorted, gpu_output);
-	////////////// <<< >>> //////////////////
 
+printf("guess here\n");
+
+  // Magic here / kernel / just a shader ////////////////////////
+  // kernal_name <<< `execution configuration` >>> (args)
+  // <<< grid dimensions (optional), block dimensions / # of thread blocks in grid, # of threads in thread block >>>
+  thisIsBasicallyAShaderInMyBook <<< (N+255)/256, 256 >>>(N, gpu_normalized_input, gpu_normalized_sorted, gpu_output, n_index, theta);
+  ////////////// <<< >>> //////////////////
+
+printf("meh\n");
 
 
 
