@@ -216,7 +216,7 @@ int main (int argc, char* argv[])
   //////////////////
   //////////////////
   int wut = 1;
-  for (int index_test = 0; index_test < input_binary_length; index_test+=3) {
+for (int index_test = 0; index_test < input_binary_length; index_test+=3) {
     if (normalized_input[wut] != 0) {
       normalized_sorted[index_test] = normalized_input[wut];
       normalized_sorted[index_test+1] = normalized_input[wut];
