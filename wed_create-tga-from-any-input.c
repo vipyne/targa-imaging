@@ -209,10 +209,10 @@ int main (int argc, char* argv[])
   free(read_through);
   printf("^^^^ normalized buffer set, length: %d \n", (int) sizeof(normalized_input));
 
-  strncpy(normalized_sorted, normalized_input, input_binary_length);
-  // printf("sizeof(normalized_input) %d \n",)
-  qsort(normalized_sorted, input_binary_length, sizeof(char), compare_function);
-  qsort(normalized_input, input_binary_length, sizeof(char), compare_function);
+  // strncpy(normalized_sorted, normalized_input, input_binary_length);
+  // // printf("sizeof(normalized_input) %d \n",)
+  // qsort(normalized_sorted, input_binary_length, sizeof(char), compare_function);
+  // qsort(normalized_input, input_binary_length, sizeof(char), compare_function);
 
   printf("^^^^ writing pixels \n");
   int n_index = 0;
@@ -220,44 +220,33 @@ int main (int argc, char* argv[])
   //// magic happens here
   for (int y = 0; y < HEIGHT; ++y)
   {
-
-		int line = (float)exp(y/1000.);
-
+    // int line = (float)exp(y/1000.);
     for (int x = 0; x < WIDTH; ++x)
     {
-      float dada = exp(theta/500.0);
-
-
-
-      if ( exp((x+1000)/200.) > 500) {
-
-      // BLUE //
-
-        fputc( normalized_input[n_index] + (float)cos(y/1000./(x/1000.)), tga);
-
-      // GREEN //
-
-        n_index--;
-        // fputc(normalized_input[n_index] + (float)exp(x/10) + dada, tga);
-        fputc(normalized_input[n_index] + (float)exp(y/10), tga);
-
-      // RED //
-
-        n_index--;
-        fputc(normalized_input[n_index] + (float)exp(y/10), tga);
-      } else {
-        fputc(normalized_sorted[n_index], tga);
-        fputc(normalized_sorted[n_index] + 100, tga);
-        fputc(normalized_sorted[n_index], tga);
-      }
-
-
-
-      n_index++;
-      n_index++;
-      n_index++;
-      n_index++;
-			theta+=0.001;
+      fputc( normalized_input[n_index], tga);
+      fputc( normalized_input[n_index+1], tga);
+      fputc( normalized_input[n_index+2], tga);
+  //     float dada = exp(theta/500.0);
+  //     if ( exp((x+1000)/200.) > 500) {
+  //     // BLUE //
+  //       fputc( normalized_input[n_index] + (float)cos(y/1000./(x/1000.)), tga);
+  //     // GREEN //
+  //       n_index--;
+  //       // fputc(normalized_input[n_index] + (float)exp(x/10) + dada, tga);
+  //       fputc(normalized_input[n_index] + (float)exp(y/10), tga);
+  //     // RED //
+  //       n_index--;
+  //       fputc(normalized_input[n_index] + (float)exp(y/10), tga);
+  //     } else {
+  //       fputc(normalized_sorted[n_index], tga);
+  //       fputc(normalized_sorted[n_index] + 100, tga);
+  //       fputc(normalized_sorted[n_index], tga);
+  //     }
+  //     n_index++;
+      n_index+=3;
+      // n_index++;
+      // n_index++;
+		// 	theta+=0.001;
     }
   }
   //// magic ends here
