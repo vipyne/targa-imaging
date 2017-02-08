@@ -209,24 +209,22 @@ int main (int argc, char* argv[])
   free(read_through);
   printf("^^^^ normalized buffer set, length: %d \n", (int) sizeof(normalized_input));
 
-  strncpy(normalized_sorted, normalized_input, input_binary_length);
-  qsort(normalized_sorted, strlen(normalized_input), sizeof(char), compare_function);
+  // strncpy(normalized_sorted, normalized_input, input_binary_length);
+  // qsort(normalized_sorted, input_binary_length, sizeof(char), compare_function);
+  // qsort(normalized_input, input_binary_length, sizeof(char), compare_function);
 
   printf("^^^^ writing pixels \n");
   int n_index = 0;
-	float theta = 0;
+  float theta = 0;
   //// magic happens here
   for (int y = 0; y < HEIGHT; ++y)
   {
     for (int x = 0; x < WIDTH; ++x)
     {
-      // pixels read in B G R order
-      fputc(normalized_input[n_index] + y + (float)log(theta/20.0), tga);
-      fputc(normalized_input[n_index] + (float)sin(theta), tga);
-      fputc(normalized_sorted[input_binary_length - n_index] + (float)sin(theta/10.0)*x, tga);
-
-      n_index++;
-			theta+=0.001;
+      fputc( normalized_input[n_index], tga);
+      fputc( normalized_input[n_index+1], tga);
+      fputc( normalized_input[n_index+2], tga);
+      n_index+=3;
     }
   }
   //// magic ends here
