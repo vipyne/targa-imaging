@@ -267,7 +267,7 @@ int main (int argc, char* argv[])
           // fputc( green_input<<1, tga);
           if (y < 200) {
             n_index--;
-            fputc(normalized_input[n_index] + (float)exp(theta/40.0) - (y+300)/4.0, tga);
+            fputc(normalized_input[n_index] + (float)exp(theta/140.0) - (y+300)/4.0, tga);
             n_index++;
           } else {
             if ( x < (50+normalized_input[n_index]%75) ) {
