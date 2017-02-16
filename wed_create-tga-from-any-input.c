@@ -213,6 +213,10 @@ int main (int argc, char* argv[])
   qsort(normalized_sorted, strlen(normalized_input), sizeof(char), compare_function);
 
   printf("^^^^ writing pixels \n");
+
+  int tga_header_size = ftell(tga);
+  int tga_current_position = ftell(tga);;
+  int pixel_count = 0;
   int n_index = 0;
 	float theta = 0;
   //// magic happens here
@@ -221,11 +225,11 @@ int main (int argc, char* argv[])
 
 		int line = (float)cos(theta/10.0)*1 + 10*x;
 
-    for (int x = 0; x < WIDTH; ++x)
+    for (int x = 0; x < WIDTH && (pixel_count <= input_binary_length); ++x)
     {
+
+
       float dada = log(theta) * 70.0;
-
-
 
       // BLUE //
 
@@ -271,11 +275,47 @@ int main (int argc, char* argv[])
         n_index--;
         fputc(normalized_input[n_index-HEIGHT-1] + (float)log(theta/10.0)*y/55.0, tga);
       }
-
       n_index++;
-			theta+=0.001;
+      theta+=0.001;
+
+      pixel_count++;
+      if (n_index > source_size) {
+        n_index = 1;
+      }
     }
   }
+
+        // ///////////// REWIND ////////////////
+      // if ( (ftell(tga) > tga_header_size) && y % 12 == 0) {
+      //   tga_current_position = ftell(tga);
+      //   fseek(tga, -10L, SEEK_CUR);
+      //   pixel_count--;
+      // } else {
+      //   fseek(tga, 10L, SEEK_CUR);
+      //   tga_current_position = ftell(tga);
+      // }
+      // ///////////// REWIND ////////////////
+  // int red_pixel_count = 0;
+  // fseek(tga, tga_current_position, SEEK_SET);
+  // for (int red_pixel_count = 0; (red_pixel_count <= input_binary_length); red_pixel_count+=9) {
+  //   // fseek(tga, 8L, SEEK_CUR); // every red
+  //   // fseek(tga, 17L, SEEK_CUR); // every other red
+  //   int cur_green = fgetc(tga);
+  //   fseek(tga, 26L, SEEK_CUR); // diagonal lines
+  //   fputc(cur_green+200, tga);
+  //   // fputc(255, tga);
+  // }
+
+  int green_pixel_count = 0;
+  fseek(tga, tga_current_position+2L, SEEK_SET);
+  for (int green_pixel_count = 0; (green_pixel_count <= input_binary_length); green_pixel_count+=9) {
+    int cur_green = fgetc(tga);
+    fseek(tga, 8L, SEEK_CUR); // every red
+    // fseek(tga, 17L, SEEK_CUR); // every other red
+    // fseek(tga, 26L, SEEK_CUR); // diagonal lines
+    fputc(cur_green-200, tga);
+  }
+
   //// magic ends here
 
   fclose(tga);
