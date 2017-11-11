@@ -222,43 +222,75 @@ int main (int argc, char* argv[])
     {
 
 	//printf("inside loop %d\n", n_index);
-			//hey silly, don't use `read_through` array in here... its not always large enough			
+			//hey silly, don't use `read_through` array in here... its not always large enough
 			double sinThing = n_index/5.0;
 			double nerd = sin(sinThing);
 			double bah = nerd * 100.0;
 			int narf = (int)bah;
-			
+
 			double super_nerd = cos(sinThing);
 			double super_secret_nerd = super_nerd * 100.0;
 			int brain = (int)brain;
-			
+
 			double tanny = tan(sinThing);
 			double tannyhundo = tanny * 100.0;
 			int tah = (int)tannyhundo;
 
-      fputc( (x/2)-(y/3)/(float)sin(x)-(narf)/17, tga);
-			//if (x-(y-narf) < HEIGHT/5) {
-			//if (y-tah < HEIGHT/7) {
-			
-			//printf("flatsin y %f\n", (float)sin(y)*100);
-			if (y > (HEIGHT/1.5 + (float)sin(y/15)*100) -(x+(float)sin(x/100)) ) {
-				n_index--;
-			//printf("narf %d\n", narf);
+      //if (x-(y-narf) < HEIGHT/5) {
+      //if (y-tah < HEIGHT/7) {
+
+      //printf("flatsin y %f\n", (float)sin(y)*100);
+      if (y > (HEIGHT/1.5 + (float)sin(y/15)*100) -(x+(float)sin(x/100)) ) {
+        n_index--;
+      //printf("narf %d\n", narf);
       // pixels read in B G R order
-      
-				fputc(normalized_input[n_index] + (float)tan(x)-y, tga);
+      fputc( (x/2)-(y/3)/(float)sin(x)-(narf), tga);
+
+
+        if ((  (tanny > (float)sin(x)) && (x > HEIGHT/5)  ) || (x > (HEIGHT/1.5 + (float)sin(y/15)*100) -(x+(float)sin(x/100)) ) ) {
+          n_index--;
+          fputc((normalized_input[narf] + (float)tan(x/48.3)-x) / ((float)HEIGHT/255.0), tga);
+          fputc( normalized_input[narf]+(float)sin(y)*5 / ((float)HEIGHT/255.0) + ((float)y/(float)HEIGHT/2.0), tga);
+        } else {
+          fputc(normalized_input[n_index] + (float)tan(x/18.3)-y, tga);
+
+          fputc( normalized_input[narf]+(float)sin(y)*5 / ((float)HEIGHT/255.0) - ((float)y/(float)HEIGHT), tga);
+        }
+
+
       //fputc( normalized_input[n_index]+ brain+y , tga);
       //fputc( normalized_input[n_index]+ brain+y , tga);
-				fputc( normalized_input[n_index]+(float)sin(y)*50, tga);
-			} else {
 
-			//fputc( (normalized_input[n_index]%255)- brain + x , tga);
-				fputc( (normalized_input[n_index] +  (float)cos(y) - x-y), tga);
-			//fputc( (normalized_input[n_index]) + (y/(float)tah), tga);
-				fputc( (normalized_sorted[n_index]) + ((y-x)/(float)brain)-y, tga);
-			//fputc( (normalized_input[n_index]) + (y/(float)tah), tga);
 
-			}			
+
+
+
+
+
+      } else {
+
+
+
+      fputc(fgetc(tga), tga);
+      fputc( (x/2)-(y/3)/(float)sin(x)-(narf)/107, tga);
+
+
+
+
+
+        // fputc( (normalized_sorted[n_index]) + y/HEIGHT, tga);
+      //fputc( (normalized_input[n_index]%255)- brain + x , tga);
+      if (y % 2 == 0) {
+        n_index++;
+        fputc( (normalized_input[n_index] +  (float)cos(y/10.0) - x-y), tga);
+      } else {
+        fputc( (normalized_input[narf] +  (float)cos(y/400.0) - x-y), tga);
+
+      }
+      //fputc( (normalized_input[n_index]) + (y/(float)tah), tga);
+      //fputc( (normalized_input[n_index]) + (y/(float)tah), tga);
+
+			}
       n_index++;
     }
   }
